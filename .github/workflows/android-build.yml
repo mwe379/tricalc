@@ -54,13 +54,10 @@ jobs:
         run: ./gradlew bundleRelease
 
       # 2. SICHERER CHECK: Prüfen ob Keys vorhanden sind
-      # Wir nutzen ein Skript, um das Vorhandensein zu prüfen,
-      # statt 'secrets' direkt im 'if' zu nutzen (das verursacht den Fehler).
       - name: Check for Signing Keys
         id: check_keys
         shell: bash
         env:
-          # Hier laden wir das Secret sicher in eine Umgebungsvariable
           KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           if [ -n "$KEYSTORE" ]; then
@@ -72,10 +69,12 @@ jobs:
           fi
 
       # 3. AAB Signieren (Nur wenn Check 'true' war)
+      # UPDATE: Wir nutzen hier 'ilharp' statt 'r0adkll', weil 'r0adkll' veraltet ist
+      # und Fehler bzgl. 'set-output' wirft.
       - name: Sign Release AAB
         id: sign_app
         if: steps.check_keys.outputs.defined == 'true'
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v1
         with:
           releaseDirectory: android/app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
