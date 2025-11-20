@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronUp, ChevronDown, Plus, Minus, Settings, Trash2, Check, Clock, X, Trophy } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronUp, ChevronDown, Plus, Minus, Settings, Trash2, Check, X, Trophy } from 'lucide-react';
 
 // -- Types --
 export type ThemeColor = 'blue' | 'orange' | 'green' | 'purple';
@@ -82,20 +82,20 @@ export const DisciplineLayout = ({
             <InputStyles />
             {/* Header Section - Adjusted top padding (pt-14) for safe area */}
             <div className={`pt-14 pb-8 px-6 shadow-sm ${getThemeColors()}`}>
-                <div className="flex justify-between items-start mb-2">
-                    {subtitle ? (
-                        <span className="text-[10px] font-bold opacity-60 tracking-widest uppercase">
-                            {subtitle}
-                        </span>
-                    ) : <span />}
+                {subtitle && (
+                    <div className="text-[10px] font-bold opacity-60 tracking-widest uppercase mb-1">
+                        {subtitle}
+                    </div>
+                )}
+                <div className="flex justify-between items-center">
+                    <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
                     <button 
                         onClick={onSettingsClick}
-                        className="opacity-60 hover:opacity-100 transition-opacity p-1"
+                        className="opacity-60 hover:opacity-100 transition-opacity p-2 -mr-2"
                     >
-                        <Settings size={20} />
+                        <Settings size={28} />
                     </button>
                 </div>
-                <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
             </div>
             
             {/* Content Section - Pulled up slightly to overlap if needed, or just spaced */}
@@ -502,78 +502,6 @@ export const GenderSelect = ({
     </div>
   </div>
 );
-
-// -- Ad Banner (Google AdMob compatible structure) --
-// Test Unit ID: ca-app-pub-3940256099942544/6300978111
-export const AdBanner = () => (
-  <div className="mt-8 bg-white border border-slate-200 rounded-lg p-0 text-center relative overflow-hidden shadow-sm flex flex-col items-center justify-center min-h-[50px]">
-    {/* In a real AdMob scenario, this div would contain the <AdMobBanner /> component or standard script */}
-    <div className="bg-slate-100 w-full h-full p-4 flex flex-col items-center justify-center">
-        <p className="text-[10px] font-mono text-slate-400 mb-1">Google AdMob Test ID</p>
-        <p className="text-[10px] font-mono text-slate-800 font-bold bg-slate-200 px-2 py-1 rounded">
-            ca-app-pub-3940256099942544/6300978111
-        </p>
-        <span className="absolute top-0 right-0 bg-slate-200 text-[8px] px-1 text-slate-500">Ad</span>
-    </div>
-  </div>
-);
-
-// -- Interstitial Ad (Google AdMob compatible structure) --
-// Test Unit ID: ca-app-pub-3940256099942544/1033173712
-export const InterstitialAd = ({ onClose }: { onClose: () => void }) => {
-  const [timeLeft, setTimeLeft] = useState(3);
-
-  useEffect(() => {
-    if (timeLeft === 0) return;
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
-
-  return (
-    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in duration-300">
-      <div className="bg-white w-full h-full max-w-sm max-h-[600px] rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col">
-        
-        {/* Top Bar */}
-        <div className="bg-slate-900 p-4 flex justify-between items-center">
-           <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Google AdMob Test</span>
-           <div className="w-8 h-8 flex items-center justify-center">
-              {timeLeft > 0 ? (
-                 <span className="text-white font-bold font-mono">{timeLeft}</span>
-              ) : (
-                 <button 
-                    onClick={onClose}
-                    className="bg-white/20 hover:bg-white/30 text-white rounded-full p-1 transition-colors"
-                 >
-                    <X size={20} />
-                 </button>
-              )}
-           </div>
-        </div>
-
-        {/* Ad Content Placeholder */}
-        <div className="bg-[#f8fafc] flex-1 flex flex-col items-center justify-center text-center p-8">
-           <div className="w-24 h-24 bg-blue-100 rounded-full mb-6 flex items-center justify-center text-blue-500">
-              <Trophy size={48} />
-           </div>
-           <h3 className="text-2xl font-black text-slate-800 mb-2">Test Interstitial</h3>
-           <p className="text-slate-500 mb-2 text-sm">
-             Unit ID:
-           </p>
-           <div className="bg-slate-200 px-3 py-2 rounded mb-8 font-mono text-xs text-slate-700 break-all">
-               ca-app-pub-3940256099942544/1033173712
-           </div>
-           
-           <div className="w-full bg-blue-600 h-12 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">
-              Installieren
-           </div>
-        </div>
-        
-      </div>
-    </div>
-  );
-}
 
 // -- Reset Button --
 export const ResetButton = ({ onClick, label }: { onClick: () => void; label: string }) => (

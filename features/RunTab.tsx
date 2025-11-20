@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { RunState, UserProfile } from '../types';
 import { 
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label, 
-  StepperInput, PresetGroup, VerticalPicker, AdBanner 
+  StepperInput, PresetGroup, VerticalPicker 
 } from '../components/MD3Components';
 import { calculateRunTime, formatTime, formatSingleDigit } from '../utils';
 import { Timer, Footprints } from 'lucide-react';
@@ -17,13 +17,12 @@ interface Props {
   onSave: (totalSeconds: number) => void;
   headerSubtitle: string;
   onOpenSettings: () => void;
-  showAds: boolean;
   userProfile: UserProfile | null;
 }
 
 export const RunTab: React.FC<Props> = ({ 
     data, onChange, mode, onModeChange, onPresetChange, onSave, 
-    headerSubtitle, onOpenSettings, showAds, userProfile
+    headerSubtitle, onOpenSettings, userProfile
 }) => {
 
   // Target Time State
@@ -205,8 +204,6 @@ export const RunTab: React.FC<Props> = ({
             </Card>
         </>
       )}
-
-      {showAds && <AdBanner />}
     </DisciplineLayout>
   );
 };

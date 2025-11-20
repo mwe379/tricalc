@@ -16,7 +16,6 @@ interface Props {
   onReset: () => void;
   headerSubtitle: string;
   onOpenSettings: () => void;
-  showAds: boolean;
   userProfile: UserProfile | null;
   swimDistMeters: number;
   bikeDistKm: number;
@@ -130,7 +129,7 @@ const TransitionRow: React.FC<{
 
 export const TotalTab: React.FC<Props> = ({ 
     swimSeconds, bikeSeconds, runSeconds, transitionData, 
-    onTransitionChange, onReset, headerSubtitle, onOpenSettings, showAds,
+    onTransitionChange, onReset, headerSubtitle, onOpenSettings,
     userProfile, swimDistMeters, bikeDistKm, runDistKm
 }) => {
   
@@ -227,15 +226,6 @@ export const TotalTab: React.FC<Props> = ({
             />
              <div className="h-px bg-slate-100 w-full mb-4 border-dashed" />
         </div>
-
-        {showAds && (
-            <div className="text-center mb-4 w-full">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Werbung</div>
-                <div className="mt-2 bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-xs text-slate-400">Anzeige hier</p>
-                </div>
-            </div>
-        )}
 
         <ResetButton label="Alle Zeiten zurücksetzen" onClick={onReset} />
 

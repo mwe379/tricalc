@@ -1,22 +1,22 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { UserProfile } from '../types';
-import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
-import { ArrowLeft, User, Calendar, Crown, Check, CreditCard } from 'lucide-react';
+import { WelcomeInput, GenderSelect, Card, Label, ResetButton } from '../components/MD3Components';
+import { ArrowLeft, User, Calendar, TriangleAlert } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
 
 interface Props {
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
   onClose: () => void;
+  onResetApp: () => void;
 }
 
-export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose }) => {
+export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onResetApp }) => {
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
-  const [isPro, setIsPro] = useState(userProfile.isPro || false);
-  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const ageGroup = calculateAgeGroup(birthDate);
 
@@ -25,26 +25,10 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
       name,
       birthDate,
       gender,
-      isPro
+      isPro: userProfile.isPro // Preserve existing pro status in data, even if UI is gone
     });
     onClose();
   };
-
-  const handlePurchase = () => {
-      setIsPaymentProcessing(true);
-      // Simulate API Call
-      setTimeout(() => {
-          setIsPaymentProcessing(false);
-          setIsPro(true);
-          // Auto save after purchase
-          onUpdateProfile({
-            name,
-            birthDate,
-            gender,
-            isPro: true
-          });
-      }, 1500);
-  }
 
   return (
     <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
@@ -95,55 +79,39 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
             </Card>
         </div>
 
+        {/* Danger Zone for Reset App */}
         <div>
-            <Label>Mitgliedschaft</Label>
-            <Card className="relative overflow-hidden">
-                {!isPro ? (
-                    <>
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                <Crown size={20} fill="currentColor" />
-                            </div>
-                            <h3 className="text-lg font-bold text-slate-900">Triathlon Pro werden</h3>
-                        </div>
-                        
-                        <ul className="space-y-2 mb-6">
-                            <li className="flex items-start gap-2 text-sm text-slate-600">
-                                <Check size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
-                                <span>Keine Werbung mehr</span>
-                            </li>
-                            <li className="flex items-start gap-2 text-sm text-slate-600">
-                                <Check size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
-                                <span>Unterstütze die Entwicklung</span>
-                            </li>
-                        </ul>
-
-                        <button
-                            onClick={handlePurchase}
-                            disabled={isPaymentProcessing}
-                            className={`w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-orange-200 active:scale-95 transition-all
-                                ${isPaymentProcessing ? 'opacity-80 cursor-wait' : 'hover:opacity-90'}
-                            `}
-                        >
-                            {isPaymentProcessing ? (
-                                "Zahlung wird verarbeitet..." 
-                            ) : (
-                                <>
-                                    <CreditCard size={18} />
-                                    Werbung entfernen (0.99 €)
-                                </>
-                            )}
-                        </button>
-                    </>
+            <div className="flex items-center gap-2 mb-3 pl-1">
+                <TriangleAlert size={14} className="text-red-500" />
+                <h3 className="text-[11px] font-bold text-red-500 uppercase tracking-widest">Gefahrenzone</h3>
+            </div>
+            
+            <Card className="border-red-100">
+                {!showResetConfirm ? (
+                    <button 
+                        onClick={() => setShowResetConfirm(true)}
+                        className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition-colors"
+                    >
+                        App zurücksetzen
+                    </button>
                 ) : (
-                    <div className="text-center py-4">
-                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 mx-auto mb-4">
-                            <Check size={32} strokeWidth={3} />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-1">Du bist Pro!</h3>
-                        <p className="text-slate-500 text-sm">Vielen Dank für deine Unterstützung.</p>
-                        <div className="mt-4 inline-block bg-slate-50 px-4 py-2 rounded-full text-xs font-bold text-slate-400 uppercase tracking-wide">
-                            Werbung deaktiviert
+                    <div className="animate-in fade-in slide-in-from-top-2">
+                        <p className="text-sm text-slate-600 mb-4 text-center">
+                            Möchtest du wirklich alle Daten löschen und von vorne beginnen? Dies kann nicht rückgängig gemacht werden.
+                        </p>
+                        <div className="flex gap-3">
+                            <button 
+                                onClick={() => setShowResetConfirm(false)}
+                                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200"
+                            >
+                                Abbrechen
+                            </button>
+                            <button 
+                                onClick={onResetApp}
+                                className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 shadow-md shadow-red-200"
+                            >
+                                Ja, alles löschen
+                            </button>
                         </div>
                     </div>
                 )}
@@ -152,7 +120,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
 
         <div className="text-center pt-4 pb-8">
             <p className="text-[10px] text-slate-400">
-                TriCalc MD3 v1.0.2 • Build 2024
+                TriCalc MD3 v1.0.3 • Build 2024
             </p>
         </div>
 

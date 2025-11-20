@@ -7,14 +7,12 @@ import { RunTab } from './features/RunTab';
 import { TotalTab } from './features/TotalTab';
 import { WelcomeScreen } from './features/WelcomeScreen';
 import { SettingsTab } from './features/SettingsTab';
-import { InterstitialAd } from './components/MD3Components';
 import { Tab, SwimState, BikeState, RunState, TransitionState, UserProfile } from './types';
 import { calculateAgeGroup } from './utils';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Swim);
   const [previousTab, setPreviousTab] = useState<Tab>(Tab.Swim);
-  const [showInterstitial, setShowInterstitial] = useState(false);
 
   // -- User Profile / Onboarding --
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -94,6 +92,14 @@ const App: React.FC = () => {
       setSavedRunSeconds(0);
   }
 
+  const handleResetApp = () => {
+      localStorage.removeItem('triCalcProfile');
+      setUserProfile(null);
+      setIsOnboardingComplete(false);
+      handleResetAll();
+      setActiveTab(Tab.Swim);
+  };
+
   const handlePresetSelect = (preset: 'Sprint' | 'Olympisch' | '70.3 (Halb)' | '140.6 (Lang)') => {
       switch (preset) {
           case 'Sprint':
@@ -129,21 +135,11 @@ const App: React.FC = () => {
   };
 
   const handleTabChange = (tab: Tab) => {
-      const isPro = userProfile?.isPro || false;
-      
-      // Logic: If switching TO Total Tab AND not Pro, show interstitial
-      if (tab === Tab.Total && !isPro) {
-          setShowInterstitial(true);
-          setActiveTab(tab); // Switch behind the ad
-      } else {
-          setActiveTab(tab);
-      }
+      setActiveTab(tab);
   }
 
   const renderContent = () => {
     const subtitle = getHeaderSubtitle();
-    const isPro = !!userProfile?.isPro;
-    const showAds = !isPro;
 
     switch (activeTab) {
       case Tab.Swim:
@@ -157,7 +153,6 @@ const App: React.FC = () => {
             onSave={(seconds) => setSavedSwimSeconds(seconds)}
             headerSubtitle=""
             onOpenSettings={openSettings}
-            showAds={showAds}
             userProfile={userProfile}
           />
         );
@@ -172,7 +167,6 @@ const App: React.FC = () => {
             onSave={(seconds) => setSavedBikeSeconds(seconds)}
             headerSubtitle=""
             onOpenSettings={openSettings}
-            showAds={showAds}
             userProfile={userProfile}
           />
         );
@@ -187,7 +181,6 @@ const App: React.FC = () => {
             onSave={(seconds) => setSavedRunSeconds(seconds)}
             headerSubtitle=""
             onOpenSettings={openSettings}
-            showAds={showAds}
             userProfile={userProfile}
           />
         );
@@ -200,9 +193,8 @@ const App: React.FC = () => {
             transitionData={transitionData}
             onTransitionChange={setTransitionData}
             onReset={handleResetAll}
-            headerSubtitle={subtitle}
+            headerSubtitle=""
             onOpenSettings={openSettings}
-            showAds={showAds}
             userProfile={userProfile}
             swimDistMeters={swimData.distanceMeters}
             bikeDistKm={bikeData.distanceKm}
@@ -215,6 +207,7 @@ const App: React.FC = () => {
                 userProfile={userProfile} 
                 onUpdateProfile={handleUpdateProfile}
                 onClose={closeSettings}
+                onResetApp={handleResetApp}
             />
          ) : null;
       default:
@@ -233,9 +226,6 @@ const App: React.FC = () => {
       </main>
       {activeTab !== Tab.Settings && (
         <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
-      )}
-      {showInterstitial && (
-          <InterstitialAd onClose={() => setShowInterstitial(false)} />
       )}
     </div>
   );
