@@ -54,10 +54,10 @@ jobs:
         run: ./gradlew bundleRelease
 
       # 2. AAB Signieren (Nur wenn Secrets vorhanden sind)
-      # Dies nutzt den Keystore, den du in GitHub Secrets hinterlegt hast
+      # KORREKTUR: ${{ }} entfernt
       - name: Sign Release AAB
         id: sign_app
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        if: secrets.ANDROID_KEYSTORE_BASE64 != ''
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: android/app/build/outputs/bundle/release
@@ -67,16 +67,18 @@ jobs:
           keyPassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         
       # 3. Signierte AAB hochladen
+      # KORREKTUR: ${{ }} entfernt
       - name: Upload Signed Release AAB
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        if: secrets.ANDROID_KEYSTORE_BASE64 != ''
         uses: actions/upload-artifact@v4
         with:
           name: signed-release-aab
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
-      # Fallback: Unsignierte AAB hochladen (falls Setup noch nicht gemacht wurde)
+      # Fallback: Unsignierte AAB hochladen
+      # KORREKTUR: ${{ }} entfernt
       - name: Upload Unsigned Release AAB
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 == '' }}
+        if: secrets.ANDROID_KEYSTORE_BASE64 == ''
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-release-aab
