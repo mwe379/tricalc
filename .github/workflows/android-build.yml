@@ -69,16 +69,15 @@ jobs:
           fi
 
       # 3. AAB Signieren (Nur wenn Check 'true' war)
-      # UPDATE: Wir nutzen hier 'ilharp' statt 'r0adkll', weil 'r0adkll' veraltet ist
-      # und Fehler bzgl. 'set-output' wirft.
+      # UPDATE: Variablennamen korrigiert laut Warning!
       - name: Sign Release AAB
         id: sign_app
         if: steps.check_keys.outputs.defined == 'true'
         uses: ilharp/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          releaseDir: android/app/build/outputs/bundle/release
+          signingKey: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         
@@ -88,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: signed-release-aab
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          path: ${{ steps.sign_app.outputs.signedFile }}
 
       # 5. Fallback: Unsignierte AAB hochladen
       - name: Upload Unsigned Release AAB
