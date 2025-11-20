@@ -1,0 +1,587 @@
+
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronUp, ChevronDown, Plus, Minus, Settings, Trash2, Check, Clock, X, Trophy } from 'lucide-react';
+
+// -- Types --
+export type ThemeColor = 'blue' | 'orange' | 'green' | 'purple';
+
+// -- Styles --
+// Injecting styles to hide scrollbars/spinners on inputs
+const InputStyles = () => (
+  <style>{`
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  `}</style>
+);
+
+// -- Helpers --
+const getThemeStyles = (isActive: boolean, theme: ThemeColor) => {
+  if (isActive) {
+      // Active: Dark background, White text
+       switch(theme) {
+          case 'orange': return 'bg-[#ea580c] text-white shadow-md'; // orange-600
+          case 'green': return 'bg-[#059669] text-white shadow-md'; // emerald-600
+          case 'purple': return 'bg-[#7c3aed] text-white shadow-md'; // violet-600
+          case 'blue': 
+          default: return 'bg-[#2563eb] text-white shadow-md'; // blue-600
+      }
+  } else {
+      // Inactive: Light background, Dark text
+       switch(theme) {
+          case 'orange': return 'bg-[#ffedd5] text-[#9a3412] hover:bg-[#fed7aa]'; // orange-100
+          case 'green': return 'bg-[#d1fae5] text-[#065f46] hover:bg-[#a7f3d0]'; // emerald-100
+          case 'purple': return 'bg-[#ede9fe] text-[#5b21b6] hover:bg-[#ddd6fe]'; // violet-100
+          case 'blue': 
+          default: return 'bg-[#dbeafe] text-[#1e40af] hover:bg-[#bfdbfe]'; // blue-100
+      }
+  }
+};
+
+// -- Wrapper --
+export const Container = ({ children }: { children: React.ReactNode }) => (
+  <div className="pb-32 pt-4 px-4 max-w-md mx-auto w-full">
+    <InputStyles />
+    {children}
+  </div>
+);
+
+// -- Discipline Layout (Colored Header) --
+export const DisciplineLayout = ({ 
+    children, 
+    theme = 'blue',
+    title,
+    subtitle,
+    onSettingsClick
+}: { 
+    children: React.ReactNode; 
+    theme: ThemeColor;
+    title: string;
+    subtitle?: string;
+    onSettingsClick?: () => void;
+}) => {
+    const getThemeColors = () => {
+        switch(theme) {
+            case 'orange': return 'bg-orange-50 text-orange-900';
+            case 'green': return 'bg-emerald-50 text-emerald-900';
+            case 'purple': return 'bg-indigo-50 text-indigo-900';
+            case 'blue': 
+            default: return 'bg-blue-50 text-blue-900';
+        }
+    }
+
+    return (
+        <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
+            <InputStyles />
+            {/* Header Section - Adjusted top padding (pt-14) for safe area */}
+            <div className={`pt-14 pb-8 px-6 shadow-sm ${getThemeColors()}`}>
+                <div className="flex justify-between items-start mb-2">
+                    {subtitle ? (
+                        <span className="text-[10px] font-bold opacity-60 tracking-widest uppercase">
+                            {subtitle}
+                        </span>
+                    ) : <span />}
+                    <button 
+                        onClick={onSettingsClick}
+                        className="opacity-60 hover:opacity-100 transition-opacity p-1"
+                    >
+                        <Settings size={20} />
+                    </button>
+                </div>
+                <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
+            </div>
+            
+            {/* Content Section - Pulled up slightly to overlap if needed, or just spaced */}
+            <div className="px-4 -mt-4">
+                {children}
+            </div>
+        </div>
+    );
+};
+
+// -- Standard Header (Legacy support if needed) --
+export const Header = ({ title, subtitle }: { title: string; subtitle?: string }) => (
+  <div className="mb-6 mt-2">
+    <div className="flex justify-between items-start mb-1">
+      {subtitle && (
+          <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+            {subtitle}
+          </span>
+      )}
+      <button className="text-slate-300 hover:text-slate-500">
+        <Settings size={20} />
+      </button>
+    </div>
+    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{title}</h1>
+  </div>
+);
+
+// -- Card --
+export const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`bg-white rounded-[24px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 ${className}`}>
+    {children}
+  </div>
+);
+
+// -- Label --
+export const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <h3 className={`text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 ${className}`}>
+    {children}
+  </h3>
+);
+
+// -- Performance Badge (New) --
+export const PerformanceBadge = ({ 
+    percentile, 
+    akLabel 
+}: { 
+    percentile: number; 
+    akLabel: string; 
+}) => {
+    return (
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f3e8ff] rounded-full text-[#7e22ce] text-xs font-bold mb-2 shadow-sm border border-[#e9d5ff] animate-in zoom-in-95">
+            <Trophy size={14} fill="currentColor" className="text-[#a855f7]" />
+            <span>Schneller als {percentile}% der AK ({akLabel})</span>
+        </div>
+    );
+};
+
+// -- Time Display Card --
+export const TimeDisplayCard = ({ 
+  label, 
+  time, 
+  textColor = 'text-[#005596]',
+  onAdd,
+  subLabel = "ZUR GESAMTZEIT HINZUFÜGEN"
+}: { 
+  label: string; 
+  time: string; 
+  textColor?: string;
+  onAdd?: () => void;
+  subLabel?: string;
+}) => {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    if (onAdd) {
+      onAdd();
+      setIsAdded(true);
+      setTimeout(() => setIsAdded(false), 1500);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-[28px] p-6 pb-6 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] border border-slate-50 relative mb-8 transition-all">
+      
+      <div className="flex flex-col">
+          <Label className="mb-1 opacity-60 text-left">{label}</Label>
+          
+          <div className="flex items-center justify-between">
+              <span className={`text-6xl font-black tracking-tighter ${textColor}`}>
+                {time}
+              </span>
+              
+              {onAdd && (
+                <button 
+                    onClick={handleAdd} 
+                    disabled={isAdded}
+                    className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 flex-shrink-0 transform
+                    ${isAdded ? 'bg-green-500 scale-105' : 'bg-[#4c4aec] hover:bg-[#3f3dbf] active:scale-95'}
+                    `}
+                >
+                    {isAdded ? <Check size={28} strokeWidth={3} /> : <Plus size={32} strokeWidth={2.5} />}
+                </button>
+              )}
+          </div>
+          
+          {onAdd && (
+              <div className="flex justify-end mt-3">
+                  <span className={`text-[10px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600' : 'text-[#4c4aec]/80'}`}>
+                      {isAdded ? "HINZUGEFÜGT" : subLabel}
+                  </span>
+              </div>
+          )}
+      </div>
+    </div>
+  );
+};
+
+// -- Toggle --
+export interface ToggleOption {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+}
+
+export const Toggle = ({ 
+    options, 
+    active, 
+    onChange,
+    theme = 'blue'
+}: { 
+    options: ToggleOption[]; 
+    active: string; 
+    onChange: (o: string) => void;
+    theme?: ThemeColor;
+}) => (
+  <div className="flex gap-3 mb-8">
+    {options.map((opt) => {
+        const isActive = active === opt.value;
+        return (
+            <button
+                key={opt.value}
+                onClick={() => onChange(opt.value)}
+                className={`
+                    flex-1 py-3 rounded-full text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2
+                    ${getThemeStyles(isActive, theme)}
+                    ${isActive ? 'scale-100' : 'scale-95'}
+                `}
+            >
+                {opt.icon}
+                {opt.label}
+            </button>
+        );
+    })}
+  </div>
+);
+
+// -- Stepper Input (Distance) --
+export const StepperInput = ({ 
+  value, 
+  unit,
+  onIncrease, 
+  onDecrease,
+  onManualChange
+}: { 
+  value: string; 
+  unit: string;
+  onIncrease: () => void; 
+  onDecrease: () => void; 
+  onManualChange?: (val: string) => void;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setLocalValue(value);
+    }
+  }, [value, isEditing]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (onManualChange) {
+      onManualChange(localValue);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+      (e.target as HTMLInputElement).blur();
+    }
+  };
+
+  return (
+    <div className="bg-[#f8fafc] rounded-[20px] p-4 flex items-center justify-between border border-slate-100 mb-4">
+      <button 
+        onClick={onDecrease}
+        className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+      >
+        <Minus size={24} />
+      </button>
+      
+      <div className="text-center flex-1 mx-2">
+          <input
+            type="text"
+            inputMode="decimal"
+            value={localValue}
+            onFocus={() => setIsEditing(true)}
+            onChange={(e) => setLocalValue(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            className="w-full text-4xl font-black text-slate-900 tracking-tight text-center bg-transparent border-none outline-none p-0"
+          />
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{unit}</div>
+      </div>
+
+      <button 
+        onClick={onIncrease}
+        className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+      >
+        <Plus size={24} />
+      </button>
+    </div>
+  );
+};
+
+// -- Presets --
+export const PresetGroup = ({ 
+  options, 
+  activeValue, 
+  onSelect,
+  theme = 'blue'
+}: { 
+  options: { label: string; value: any }[]; 
+  activeValue: any; 
+  onSelect: (val: any) => void;
+  theme?: ThemeColor;
+}) => {
+    
+  return (
+  <div className="flex gap-1">
+    {options.map((opt, index) => {
+       const isActive = Math.abs(activeValue - opt.value) < 0.001; // Fuzzy compare for float
+       const isFirst = index === 0;
+       const isLast = index === options.length - 1;
+
+       let borderRadiusClass = '';
+       if (isActive) {
+         // Active is always fully rounded pill
+         borderRadiusClass = 'rounded-full scale-[1.02] z-10'; 
+       } else {
+         if (isFirst) {
+           // Inactive first: Outer fully rounded, inner slightly rounded
+           borderRadiusClass = 'rounded-l-full rounded-r-lg';
+         } else if (isLast) {
+           // Inactive last: Outer fully rounded, inner slightly rounded
+           borderRadiusClass = 'rounded-r-full rounded-l-lg';
+         } else {
+           // Inactive middle: Slightly rounded
+           borderRadiusClass = 'rounded-lg';
+         }
+       }
+
+       return (
+        <button
+          key={opt.label}
+          onClick={() => onSelect(opt.value)}
+          className={`
+            flex-1 py-3 px-1 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-tight transition-all duration-200
+            ${getThemeStyles(isActive, theme)}
+            ${borderRadiusClass}
+          `}
+        >
+          <span className="truncate">{opt.label}</span>
+        </button>
+       );
+    })}
+  </div>
+  );
+};
+
+// -- Vertical Picker (Compact) --
+export const VerticalPicker = ({ 
+  value, 
+  label,
+  subLabel,
+  onIncrease, 
+  onDecrease,
+  onManualChange
+}: { 
+  value: string; 
+  label?: string;
+  subLabel?: string;
+  onIncrease: () => void; 
+  onDecrease: () => void; 
+  onManualChange?: (val: string) => void;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
+
+  useEffect(() => {
+    if (!isEditing) setLocalValue(value);
+  }, [value, isEditing]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (onManualChange) onManualChange(localValue);
+  };
+
+  return (
+    <div className="flex flex-col items-center w-20">
+      <button onClick={onIncrease} className="text-slate-300 hover:text-slate-500 p-1 transition-colors"><ChevronUp size={20} /></button>
+      
+      <div className="bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.05)] w-20 h-14 flex items-center justify-center rounded-2xl my-0.5 overflow-hidden">
+          <input 
+              type="number"
+              inputMode="numeric"
+              value={localValue}
+              onFocus={() => setIsEditing(true)}
+              onChange={(e) => setLocalValue(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={(e) => e.key === 'Enter' && handleBlur()}
+              className="w-full h-full text-center text-2xl font-bold text-slate-900 bg-transparent outline-none"
+          />
+      </div>
+      
+      <button onClick={onDecrease} className="text-slate-300 hover:text-slate-500 p-1 transition-colors"><ChevronDown size={20} /></button>
+      
+      {(label || subLabel) && (
+          <div className="text-center mt-1">
+              {label && <div className="text-[9px] font-bold text-slate-400 uppercase">{label}</div>}
+              {subLabel && <div className="text-[8px] font-bold text-slate-300 uppercase mt-0.5">{subLabel}</div>}
+          </div>
+      )}
+    </div>
+  );
+};
+
+// -- Welcome Screen Inputs --
+export const WelcomeInput = ({ 
+  label, 
+  placeholder, 
+  value, 
+  onChange, 
+  type = 'text',
+  icon
+}: { 
+  label: string; 
+  placeholder: string; 
+  value: string; 
+  onChange: (val: string) => void; 
+  type?: string;
+  icon?: React.ReactNode;
+}) => (
+  <div className="mb-5">
+    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+      {label}
+    </label>
+    <div className="bg-[#f8fafc] border border-slate-200 rounded-xl flex items-center px-4 py-3 focus-within:border-blue-400 focus-within:bg-white transition-all">
+      {icon && <div className="mr-3 text-slate-400">{icon}</div>}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="bg-transparent border-none outline-none text-slate-700 w-full font-medium placeholder:text-slate-400"
+      />
+    </div>
+  </div>
+);
+
+export const GenderSelect = ({ 
+  selected, 
+  onChange 
+}: { 
+  selected: 'male' | 'female' | null; 
+  onChange: (val: 'male' | 'female') => void 
+}) => (
+  <div className="mb-8">
+    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+      Geschlecht
+    </label>
+    <div className="flex gap-3">
+      <button
+        onClick={() => onChange('male')}
+        className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${
+          selected === 'male'
+            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+        }`}
+      >
+        Männlich
+      </button>
+      <button
+        onClick={() => onChange('female')}
+        className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${
+          selected === 'female'
+            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+        }`}
+      >
+        Weiblich
+      </button>
+    </div>
+  </div>
+);
+
+// -- Ad Banner (Google AdMob compatible structure) --
+// Test Unit ID: ca-app-pub-3940256099942544/6300978111
+export const AdBanner = () => (
+  <div className="mt-8 bg-white border border-slate-200 rounded-lg p-0 text-center relative overflow-hidden shadow-sm flex flex-col items-center justify-center min-h-[50px]">
+    {/* In a real AdMob scenario, this div would contain the <AdMobBanner /> component or standard script */}
+    <div className="bg-slate-100 w-full h-full p-4 flex flex-col items-center justify-center">
+        <p className="text-[10px] font-mono text-slate-400 mb-1">Google AdMob Test ID</p>
+        <p className="text-[10px] font-mono text-slate-800 font-bold bg-slate-200 px-2 py-1 rounded">
+            ca-app-pub-3940256099942544/6300978111
+        </p>
+        <span className="absolute top-0 right-0 bg-slate-200 text-[8px] px-1 text-slate-500">Ad</span>
+    </div>
+  </div>
+);
+
+// -- Interstitial Ad (Google AdMob compatible structure) --
+// Test Unit ID: ca-app-pub-3940256099942544/1033173712
+export const InterstitialAd = ({ onClose }: { onClose: () => void }) => {
+  const [timeLeft, setTimeLeft] = useState(3);
+
+  useEffect(() => {
+    if (timeLeft === 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in duration-300">
+      <div className="bg-white w-full h-full max-w-sm max-h-[600px] rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col">
+        
+        {/* Top Bar */}
+        <div className="bg-slate-900 p-4 flex justify-between items-center">
+           <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Google AdMob Test</span>
+           <div className="w-8 h-8 flex items-center justify-center">
+              {timeLeft > 0 ? (
+                 <span className="text-white font-bold font-mono">{timeLeft}</span>
+              ) : (
+                 <button 
+                    onClick={onClose}
+                    className="bg-white/20 hover:bg-white/30 text-white rounded-full p-1 transition-colors"
+                 >
+                    <X size={20} />
+                 </button>
+              )}
+           </div>
+        </div>
+
+        {/* Ad Content Placeholder */}
+        <div className="bg-[#f8fafc] flex-1 flex flex-col items-center justify-center text-center p-8">
+           <div className="w-24 h-24 bg-blue-100 rounded-full mb-6 flex items-center justify-center text-blue-500">
+              <Trophy size={48} />
+           </div>
+           <h3 className="text-2xl font-black text-slate-800 mb-2">Test Interstitial</h3>
+           <p className="text-slate-500 mb-2 text-sm">
+             Unit ID:
+           </p>
+           <div className="bg-slate-200 px-3 py-2 rounded mb-8 font-mono text-xs text-slate-700 break-all">
+               ca-app-pub-3940256099942544/1033173712
+           </div>
+           
+           <div className="w-full bg-blue-600 h-12 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">
+              Installieren
+           </div>
+        </div>
+        
+      </div>
+    </div>
+  );
+}
+
+// -- Reset Button --
+export const ResetButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+    <button 
+        onClick={onClick}
+        className="w-full bg-red-50 text-red-700 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 mt-8 hover:bg-red-100 transition-colors active:scale-95"
+    >
+        <Trash2 size={18} />
+        {label}
+    </button>
+);

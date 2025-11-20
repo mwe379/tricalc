@@ -1,0 +1,5 @@
+{
+  "name": "TriCalc Material 3",
+  "description": "A comprehensive Triathlon calculator designed with Material Design 3 principles. Calculate splits for Swim, Bike, and Run, and view total race times including transitions.",
+  "requestFramePermissions": []
+}
