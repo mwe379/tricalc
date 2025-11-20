@@ -128,7 +128,7 @@ export const BikeTab: React.FC<Props> = ({
       />
 
       <Label>Distanz</Label>
-      <Card className="mb-8">
+      <Card className="mb-5">
         <StepperInput 
           value={data.distanceKm.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} 
           unit="KM" 

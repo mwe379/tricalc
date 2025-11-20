@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build Android
+    name: Build & Sign Android
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
@@ -35,27 +35,49 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 1. APK Bauen (Debug Version - zum direkten Installieren auf dem Handy)
+      # --- DEBUG BUILD (Zum Testen) ---
       - name: Build Debug APK
         working-directory: ./android
         run: ./gradlew assembleDebug
 
-      # 2. AAB Bauen (Release Version - für den Google Play Store)
-      # Hinweis: Dies erzeugt eine unsignierte AAB, wenn kein Keystore hinterlegt ist.
-      - name: Build Release AAB
-        working-directory: ./android
-        run: ./gradlew bundleRelease
-
-      # Upload APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: tricalc-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # Upload AAB
-      - name: Upload Release AAB
+      # --- RELEASE BUILD (Für den Store) ---
+      
+      # 1. Unsignierte AAB bauen
+      - name: Build Release AAB
+        working-directory: ./android
+        run: ./gradlew bundleRelease
+
+      # 2. AAB Signieren (Nur wenn Secrets vorhanden sind)
+      # Dies nutzt den Keystore, den du in GitHub Secrets hinterlegt hast
+      - name: Sign Release AAB
+        id: sign_app
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        
+      # 3. Signierte AAB hochladen
+      - name: Upload Signed Release AAB
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: tricalc-release-aab
+          name: signed-release-aab
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+
+      # Fallback: Unsignierte AAB hochladen (falls Setup noch nicht gemacht wurde)
+      - name: Upload Unsigned Release AAB
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab

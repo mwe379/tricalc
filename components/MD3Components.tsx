@@ -80,8 +80,8 @@ export const DisciplineLayout = ({
     return (
         <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
             <InputStyles />
-            {/* Header Section - Adjusted top padding (pt-14) for safe area */}
-            <div className={`pt-14 pb-8 px-6 shadow-sm ${getThemeColors()}`}>
+            {/* Header Section - Increased top padding (pt-24) for better spacing */}
+            <div className={`pt-24 pb-6 px-6 shadow-sm ${getThemeColors()}`}>
                 {subtitle && (
                     <div className="text-[10px] font-bold opacity-60 tracking-widest uppercase mb-1">
                         {subtitle}
@@ -98,7 +98,7 @@ export const DisciplineLayout = ({
                 </div>
             </div>
             
-            {/* Content Section - Pulled up slightly to overlap if needed, or just spaced */}
+            {/* Content Section - Pulled up slightly */}
             <div className="px-4 -mt-4">
                 {children}
             </div>
@@ -125,14 +125,14 @@ export const Header = ({ title, subtitle }: { title: string; subtitle?: string }
 
 // -- Card --
 export const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-[24px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 ${className}`}>
+  <div className={`bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 ${className}`}>
     {children}
   </div>
 );
 
 // -- Label --
 export const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={`text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 ${className}`}>
+  <h3 className={`text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 ${className}`}>
     {children}
   </h3>
 );
@@ -178,7 +178,7 @@ export const TimeDisplayCard = ({
   };
 
   return (
-    <div className="bg-white rounded-[28px] p-6 pb-6 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] border border-slate-50 relative mb-8 transition-all">
+    <div className="bg-white rounded-[28px] p-5 pb-5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] border border-slate-50 relative mb-5 transition-all">
       
       <div className="flex flex-col">
           <Label className="mb-1 opacity-60 text-left">{label}</Label>
@@ -192,18 +192,18 @@ export const TimeDisplayCard = ({
                 <button 
                     onClick={handleAdd} 
                     disabled={isAdded}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 flex-shrink-0 transform
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 flex-shrink-0 transform
                     ${isAdded ? 'bg-green-500 scale-105' : 'bg-[#4c4aec] hover:bg-[#3f3dbf] active:scale-95'}
                     `}
                 >
-                    {isAdded ? <Check size={28} strokeWidth={3} /> : <Plus size={32} strokeWidth={2.5} />}
+                    {isAdded ? <Check size={24} strokeWidth={3} /> : <Plus size={28} strokeWidth={2.5} />}
                 </button>
               )}
           </div>
           
           {onAdd && (
-              <div className="flex justify-end mt-3">
-                  <span className={`text-[10px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600' : 'text-[#4c4aec]/80'}`}>
+              <div className="flex justify-end mt-2">
+                  <span className={`text-[9px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600' : 'text-[#4c4aec]/80'}`}>
                       {isAdded ? "HINZUGEFÜGT" : subLabel}
                   </span>
               </div>
@@ -231,7 +231,7 @@ export const Toggle = ({
     onChange: (o: string) => void;
     theme?: ThemeColor;
 }) => (
-  <div className="flex gap-3 mb-8">
+  <div className="flex gap-2 mb-6">
     {options.map((opt) => {
         const isActive = active === opt.value;
         return (
@@ -239,7 +239,7 @@ export const Toggle = ({
                 key={opt.value}
                 onClick={() => onChange(opt.value)}
                 className={`
-                    flex-1 py-3 rounded-full text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2
+                    flex-1 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2
                     ${getThemeStyles(isActive, theme)}
                     ${isActive ? 'scale-100' : 'scale-95'}
                 `}
@@ -290,12 +290,12 @@ export const StepperInput = ({
   };
 
   return (
-    <div className="bg-[#f8fafc] rounded-[20px] p-4 flex items-center justify-between border border-slate-100 mb-4">
+    <div className="bg-[#f8fafc] rounded-[20px] p-3 flex items-center justify-between border border-slate-100 mb-3">
       <button 
         onClick={onDecrease}
-        className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+        className="w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
       >
-        <Minus size={24} />
+        <Minus size={20} />
       </button>
       
       <div className="text-center flex-1 mx-2">
@@ -307,16 +307,16 @@ export const StepperInput = ({
             onChange={(e) => setLocalValue(e.target.value)}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            className="w-full text-4xl font-black text-slate-900 tracking-tight text-center bg-transparent border-none outline-none p-0"
+            className="w-full text-3xl font-black text-slate-900 tracking-tight text-center bg-transparent border-none outline-none p-0"
           />
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{unit}</div>
+        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{unit}</div>
       </div>
 
       <button 
         onClick={onIncrease}
-        className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+        className="w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
       >
-        <Plus size={24} />
+        <Plus size={20} />
       </button>
     </div>
   );
@@ -364,7 +364,7 @@ export const PresetGroup = ({
           key={opt.label}
           onClick={() => onSelect(opt.value)}
           className={`
-            flex-1 py-3 px-1 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-tight transition-all duration-200
+            flex-1 py-2.5 px-1 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-tight transition-all duration-200
             ${getThemeStyles(isActive, theme)}
             ${borderRadiusClass}
           `}
@@ -409,7 +409,7 @@ export const VerticalPicker = ({
     <div className="flex flex-col items-center w-20">
       <button onClick={onIncrease} className="text-slate-300 hover:text-slate-500 p-1 transition-colors"><ChevronUp size={20} /></button>
       
-      <div className="bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.05)] w-20 h-14 flex items-center justify-center rounded-2xl my-0.5 overflow-hidden">
+      <div className="bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.05)] w-16 h-12 flex items-center justify-center rounded-2xl my-0.5 overflow-hidden">
           <input 
               type="number"
               inputMode="numeric"
@@ -418,7 +418,7 @@ export const VerticalPicker = ({
               onChange={(e) => setLocalValue(e.target.value)}
               onBlur={handleBlur}
               onKeyDown={(e) => e.key === 'Enter' && handleBlur()}
-              className="w-full h-full text-center text-2xl font-bold text-slate-900 bg-transparent outline-none"
+              className="w-full h-full text-center text-xl font-bold text-slate-900 bg-transparent outline-none"
           />
       </div>
       

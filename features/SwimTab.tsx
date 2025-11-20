@@ -135,7 +135,7 @@ export const SwimTab: React.FC<Props> = ({
       />
 
       <Label>Distanz</Label>
-      <Card className="mb-8">
+      <Card className="mb-5">
         <StepperInput 
           value={distDisplay} 
           unit="KM" 

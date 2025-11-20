@@ -1,22 +1,20 @@
 
 import React, { useState } from 'react';
 import { UserProfile } from '../types';
-import { WelcomeInput, GenderSelect, Card, Label, ResetButton } from '../components/MD3Components';
-import { ArrowLeft, User, Calendar, TriangleAlert } from 'lucide-react';
+import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
+import { ArrowLeft, User, Calendar } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
 
 interface Props {
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
   onClose: () => void;
-  onResetApp: () => void;
 }
 
-export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onResetApp }) => {
+export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose }) => {
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const ageGroup = calculateAgeGroup(birthDate);
 
@@ -25,7 +23,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
       name,
       birthDate,
       gender,
-      isPro: userProfile.isPro // Preserve existing pro status in data, even if UI is gone
+      isPro: userProfile.isPro
     });
     onClose();
   };
@@ -79,48 +77,9 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
             </Card>
         </div>
 
-        {/* Danger Zone for Reset App */}
-        <div>
-            <div className="flex items-center gap-2 mb-3 pl-1">
-                <TriangleAlert size={14} className="text-red-500" />
-                <h3 className="text-[11px] font-bold text-red-500 uppercase tracking-widest">Gefahrenzone</h3>
-            </div>
-            
-            <Card className="border-red-100">
-                {!showResetConfirm ? (
-                    <button 
-                        onClick={() => setShowResetConfirm(true)}
-                        className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition-colors"
-                    >
-                        App zurücksetzen
-                    </button>
-                ) : (
-                    <div className="animate-in fade-in slide-in-from-top-2">
-                        <p className="text-sm text-slate-600 mb-4 text-center">
-                            Möchtest du wirklich alle Daten löschen und von vorne beginnen? Dies kann nicht rückgängig gemacht werden.
-                        </p>
-                        <div className="flex gap-3">
-                            <button 
-                                onClick={() => setShowResetConfirm(false)}
-                                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200"
-                            >
-                                Abbrechen
-                            </button>
-                            <button 
-                                onClick={onResetApp}
-                                className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 shadow-md shadow-red-200"
-                            >
-                                Ja, alles löschen
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </Card>
-        </div>
-
         <div className="text-center pt-4 pb-8">
             <p className="text-[10px] text-slate-400">
-                TriCalc MD3 v1.0.3 • Build 2024
+                TriCalc MD3 v1.0.5 • Build 2024
             </p>
         </div>
 

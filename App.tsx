@@ -92,14 +92,6 @@ const App: React.FC = () => {
       setSavedRunSeconds(0);
   }
 
-  const handleResetApp = () => {
-      localStorage.removeItem('triCalcProfile');
-      setUserProfile(null);
-      setIsOnboardingComplete(false);
-      handleResetAll();
-      setActiveTab(Tab.Swim);
-  };
-
   const handlePresetSelect = (preset: 'Sprint' | 'Olympisch' | '70.3 (Halb)' | '140.6 (Lang)') => {
       switch (preset) {
           case 'Sprint':
@@ -207,7 +199,6 @@ const App: React.FC = () => {
                 userProfile={userProfile} 
                 onUpdateProfile={handleUpdateProfile}
                 onClose={closeSettings}
-                onResetApp={handleResetApp}
             />
          ) : null;
       default:
