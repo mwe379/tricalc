@@ -69,7 +69,6 @@ jobs:
           fi
 
       # 3. AAB Signieren (Nur wenn Check 'true' war)
-      # UPDATE: Variablennamen korrigiert laut Warning!
       - name: Sign Release AAB
         id: sign_app
         if: steps.check_keys.outputs.defined == 'true'
@@ -80,6 +79,7 @@ jobs:
           keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          buildToolsVersion: 34.0.0  # <--- HIER IST DER FIX
         
       # 4. Signierte AAB hochladen
       - name: Upload Signed Release AAB
