@@ -1,0 +1,61 @@
+name: Build Android App (APK & AAB)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Assets (React/Vite)
+        run: npm run build
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # 1. APK Bauen (Debug Version - zum direkten Installieren auf dem Handy)
+      - name: Build Debug APK
+        working-directory: ./android
+        run: ./gradlew assembleDebug
+
+      # 2. AAB Bauen (Release Version - für den Google Play Store)
+      # Hinweis: Dies erzeugt eine unsignierte AAB, wenn kein Keystore hinterlegt ist.
+      - name: Build Release AAB
+        working-directory: ./android
+        run: ./gradlew bundleRelease
+
+      # Upload APK
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tricalc-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      # Upload AAB
+      - name: Upload Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: tricalc-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
