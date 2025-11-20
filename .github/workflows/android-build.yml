@@ -35,7 +35,7 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # --- DEBUG BUILD (Zum Testen) ---
+      # --- DEBUG BUILD ---
       - name: Build Debug APK
         working-directory: ./android
         run: ./gradlew assembleDebug
@@ -46,18 +46,35 @@ jobs:
           name: tricalc-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # --- RELEASE BUILD (Für den Store) ---
+      # --- RELEASE BUILD ---
       
-      # 1. Unsignierte AAB bauen
+      # 1. Unsignierte AAB bauen (immer)
       - name: Build Release AAB
         working-directory: ./android
         run: ./gradlew bundleRelease
 
-      # 2. AAB Signieren (Nur wenn Secrets vorhanden sind)
-      # KORREKTUR: Mit Anführungszeichen "${{ ... }}"
+      # 2. SICHERER CHECK: Prüfen ob Keys vorhanden sind
+      # Wir nutzen ein Skript, um das Vorhandensein zu prüfen,
+      # statt 'secrets' direkt im 'if' zu nutzen (das verursacht den Fehler).
+      - name: Check for Signing Keys
+        id: check_keys
+        shell: bash
+        env:
+          # Hier laden wir das Secret sicher in eine Umgebungsvariable
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE" ]; then
+            echo "Has keys? YES"
+            echo "defined=true" >> $GITHUB_OUTPUT
+          else
+            echo "Has keys? NO"
+            echo "defined=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 3. AAB Signieren (Nur wenn Check 'true' war)
       - name: Sign Release AAB
         id: sign_app
-        if: "${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}"
+        if: steps.check_keys.outputs.defined == 'true'
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: android/app/build/outputs/bundle/release
@@ -66,19 +83,17 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         
-      # 3. Signierte AAB hochladen
-      # KORREKTUR: Mit Anführungszeichen "${{ ... }}"
+      # 4. Signierte AAB hochladen
       - name: Upload Signed Release AAB
-        if: "${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}"
+        if: steps.check_keys.outputs.defined == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: signed-release-aab
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
-      # Fallback: Unsignierte AAB hochladen
-      # KORREKTUR: Mit Anführungszeichen "${{ ... }}"
+      # 5. Fallback: Unsignierte AAB hochladen
       - name: Upload Unsigned Release AAB
-        if: "${{ secrets.ANDROID_KEYSTORE_BASE64 == '' }}"
+        if: steps.check_keys.outputs.defined == 'false'
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-release-aab
