@@ -110,9 +110,9 @@ export const BikeTab: React.FC<Props> = ({
       title="Radfahren"
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
-      hasTopAd={true}
+      hasTopAd={!userProfile?.isPro}
     >
-      <AdMobBanner />
+      {!userProfile?.isPro && <AdMobBanner />}
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}

@@ -106,9 +106,9 @@ export const RunTab: React.FC<Props> = ({
       title="Laufen"
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
-      hasTopAd={true}
+      hasTopAd={!userProfile?.isPro}
     >
-      <AdMobBanner />
+      {!userProfile?.isPro && <AdMobBanner />}
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
