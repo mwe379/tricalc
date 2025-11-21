@@ -106,7 +106,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
 
         <div className="text-center pt-4 pb-8">
           <p className="text-[10px] text-slate-400">
-            TriCalc v1.0.0
+            TriCalc v1.2.0
           </p>
         </div>
 
