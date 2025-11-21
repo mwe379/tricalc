@@ -116,10 +116,8 @@ export const SwimTab: React.FC<Props> = ({
       title="Schwimmen"
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
+      hasTopAd={true} // AKTIVIERT den oberen Abstand
     >
-      {/* Die AdMob-Logik wird hier eingebunden. 
-          Da es ein natives Overlay ist (null render), beeinflusst es das Layout nicht direkt,
-          wird aber beim Mounten dieses Tabs getriggert. */}
       <AdMobBanner />
 
       <TimeDisplayCard

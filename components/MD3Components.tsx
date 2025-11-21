@@ -55,13 +55,15 @@ export const DisciplineLayout = ({
   theme = 'blue',
   title,
   subtitle,
-  onSettingsClick
+  onSettingsClick,
+  hasTopAd = false // NEUER PROP: Steuert den oberen Abstand
 }: {
   children: React.ReactNode;
   theme: ThemeColor;
   title: string;
   subtitle?: string;
   onSettingsClick?: () => void;
+  hasTopAd?: boolean;
 }) => {
   const getThemeColors = () => {
     switch (theme) {
@@ -73,12 +75,15 @@ export const DisciplineLayout = ({
     }
   }
 
+  // Wenn Ad aktiv ist, nutzen wir pt-40 (ca. 160px), sonst pt-24 (ca. 96px)
+  // Das schafft Platz für den nativen Banner oben.
+  const topPadding = hasTopAd ? 'pt-40' : 'pt-24';
+
   return (
-    // WICHTIGE ÄNDERUNG: pb-48 (statt pb-32)
-    // Erhöhtes Bottom-Padding, damit der Content nicht hinter der Werbung+Navbar verschwindet
-    <div className="min-h-screen bg-[#f3f5f7] pb-48 max-w-md mx-auto w-full">
+    <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
       <InputStyles />
-      <div className={`pt-24 pb-6 px-6 shadow-sm ${getThemeColors()}`}>
+      {/* Header Section */}
+      <div className={`${topPadding} pb-6 px-6 shadow-sm ${getThemeColors()}`}>
         {subtitle && (
           <div className="text-[10px] font-bold opacity-60 tracking-widest uppercase mb-1">
             {subtitle}
