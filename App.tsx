@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { BottomNav } from './components/BottomNav';
 import { SwimTab } from './features/SwimTab';
@@ -34,8 +33,8 @@ const App: React.FC = () => {
   };
 
   const handleUpdateProfile = (updatedProfile: UserProfile) => {
-      localStorage.setItem('triCalcProfile', JSON.stringify(updatedProfile));
-      setUserProfile(updatedProfile);
+    localStorage.setItem('triCalcProfile', JSON.stringify(updatedProfile));
+    setUserProfile(updatedProfile);
   }
 
   const getHeaderSubtitle = () => {
@@ -68,10 +67,10 @@ const App: React.FC = () => {
   });
 
   const [transitionData, setTransitionData] = useState<TransitionState>({
-      t1Minutes: 0,
-      t1Seconds: 0,
-      t2Minutes: 0,
-      t2Seconds: 0
+    t1Minutes: 0,
+    t1Seconds: 0,
+    t2Minutes: 0,
+    t2Seconds: 0
   });
 
   // SAVED STATE (Race Plan / Total Tab)
@@ -80,54 +79,54 @@ const App: React.FC = () => {
   const [savedRunSeconds, setSavedRunSeconds] = useState<number>(0);
 
   const handleResetAll = () => {
-      // Reset Inputs
-      setSwimData({ distanceMeters: 750, paceMinPer100m: 2, paceSecPer100m: 0 });
-      setBikeData({ distanceKm: 20, speedKmh: 30 });
-      setRunData({ distanceKm: 5, paceMinPerKm: 6, paceSecPerKm: 0 });
-      setTransitionData({ t1Minutes: 0, t1Seconds: 0, t2Minutes: 0, t2Seconds: 0 });
-      
-      // Reset Saved Times
-      setSavedSwimSeconds(0);
-      setSavedBikeSeconds(0);
-      setSavedRunSeconds(0);
+    // Reset Inputs
+    setSwimData({ distanceMeters: 750, paceMinPer100m: 2, paceSecPer100m: 0 });
+    setBikeData({ distanceKm: 20, speedKmh: 30 });
+    setRunData({ distanceKm: 5, paceMinPerKm: 6, paceSecPerKm: 0 });
+    setTransitionData({ t1Minutes: 0, t1Seconds: 0, t2Minutes: 0, t2Seconds: 0 });
+
+    // Reset Saved Times
+    setSavedSwimSeconds(0);
+    setSavedBikeSeconds(0);
+    setSavedRunSeconds(0);
   }
 
   const handlePresetSelect = (preset: 'Sprint' | 'Olympisch' | '70.3 (Halb)' | '140.6 (Lang)') => {
-      switch (preset) {
-          case 'Sprint':
-              setSwimData(d => ({ ...d, distanceMeters: 750 }));
-              setBikeData(d => ({ ...d, distanceKm: 20 }));
-              setRunData(d => ({ ...d, distanceKm: 5 }));
-              break;
-          case 'Olympisch':
-              setSwimData(d => ({ ...d, distanceMeters: 1500 }));
-              setBikeData(d => ({ ...d, distanceKm: 40 }));
-              setRunData(d => ({ ...d, distanceKm: 10 }));
-              break;
-          case '70.3 (Halb)':
-              setSwimData(d => ({ ...d, distanceMeters: 1900 }));
-              setBikeData(d => ({ ...d, distanceKm: 90 }));
-              setRunData(d => ({ ...d, distanceKm: 21.1 }));
-              break;
-          case '140.6 (Lang)':
-              setSwimData(d => ({ ...d, distanceMeters: 3800 }));
-              setBikeData(d => ({ ...d, distanceKm: 180 }));
-              setRunData(d => ({ ...d, distanceKm: 42.2 }));
-              break;
-      }
+    switch (preset) {
+      case 'Sprint':
+        setSwimData(d => ({ ...d, distanceMeters: 750 }));
+        setBikeData(d => ({ ...d, distanceKm: 20 }));
+        setRunData(d => ({ ...d, distanceKm: 5 }));
+        break;
+      case 'Olympisch':
+        setSwimData(d => ({ ...d, distanceMeters: 1500 }));
+        setBikeData(d => ({ ...d, distanceKm: 40 }));
+        setRunData(d => ({ ...d, distanceKm: 10 }));
+        break;
+      case '70.3 (Halb)':
+        setSwimData(d => ({ ...d, distanceMeters: 1900 }));
+        setBikeData(d => ({ ...d, distanceKm: 90 }));
+        setRunData(d => ({ ...d, distanceKm: 21.1 }));
+        break;
+      case '140.6 (Lang)':
+        setSwimData(d => ({ ...d, distanceMeters: 3800 }));
+        setBikeData(d => ({ ...d, distanceKm: 180 }));
+        setRunData(d => ({ ...d, distanceKm: 42.2 }));
+        break;
+    }
   };
 
   const openSettings = () => {
-      setPreviousTab(activeTab);
-      setActiveTab(Tab.Settings);
+    setPreviousTab(activeTab);
+    setActiveTab(Tab.Settings);
   };
 
   const closeSettings = () => {
-      setActiveTab(previousTab);
+    setActiveTab(previousTab);
   };
 
   const handleTabChange = (tab: Tab) => {
-      setActiveTab(tab);
+    setActiveTab(tab);
   }
 
   const renderContent = () => {
@@ -136,9 +135,9 @@ const App: React.FC = () => {
     switch (activeTab) {
       case Tab.Swim:
         return (
-          <SwimTab 
-            data={swimData} 
-            onChange={setSwimData} 
+          <SwimTab
+            data={swimData}
+            onChange={setSwimData}
             mode={calculationMode}
             onModeChange={setCalculationMode}
             onPresetChange={handlePresetSelect}
@@ -150,9 +149,9 @@ const App: React.FC = () => {
         );
       case Tab.Bike:
         return (
-          <BikeTab 
-            data={bikeData} 
-            onChange={setBikeData} 
+          <BikeTab
+            data={bikeData}
+            onChange={setBikeData}
             mode={calculationMode}
             onModeChange={setCalculationMode}
             onPresetChange={handlePresetSelect}
@@ -164,9 +163,9 @@ const App: React.FC = () => {
         );
       case Tab.Run:
         return (
-          <RunTab 
-            data={runData} 
-            onChange={setRunData} 
+          <RunTab
+            data={runData}
+            onChange={setRunData}
             mode={calculationMode}
             onModeChange={setCalculationMode}
             onPresetChange={handlePresetSelect}
@@ -178,10 +177,10 @@ const App: React.FC = () => {
         );
       case Tab.Total:
         return (
-          <TotalTab 
-            swimSeconds={savedSwimSeconds} 
-            bikeSeconds={savedBikeSeconds} 
-            runSeconds={savedRunSeconds} 
+          <TotalTab
+            swimSeconds={savedSwimSeconds}
+            bikeSeconds={savedBikeSeconds}
+            runSeconds={savedRunSeconds}
             transitionData={transitionData}
             onTransitionChange={setTransitionData}
             onReset={handleResetAll}
@@ -194,13 +193,13 @@ const App: React.FC = () => {
           />
         );
       case Tab.Settings:
-         return userProfile ? (
-            <SettingsTab 
-                userProfile={userProfile} 
-                onUpdateProfile={handleUpdateProfile}
-                onClose={closeSettings}
-            />
-         ) : null;
+        return userProfile ? (
+          <SettingsTab
+            userProfile={userProfile}
+            onUpdateProfile={handleUpdateProfile}
+            onClose={closeSettings}
+          />
+        ) : null;
       default:
         return null;
     }
