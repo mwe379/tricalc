@@ -110,18 +110,32 @@ export const SwimTab: React.FC<Props> = ({
   const distKm = data.distanceMeters / 1000;
   const distDisplay = distKm.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  return (
+    <DisciplineLayout
+      theme="blue"
+      title="Schwimmen"
+      subtitle={headerSubtitle}
+      onSettingsClick={onOpenSettings}
+      hasTopAd={!userProfile?.isPro}
+    >
+      {!userProfile?.isPro && <AdMobBanner />}
+
+      <TimeDisplayCard
+        label={displayLabel}
+        time={displayMain}
+        onAdd={() => onSave(secondsForTotal)}
+        textColor="text-[#005596]"
       />
 
-    < Toggle
-  options = {
-    [
-    { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
-    { label: 'Pace berechnen', value: 'pace', icon: <Footprints size={16} strokeWidth={2.5} /> }
-    ]}
-  active = { mode }
-  onChange = { onModeChange }
-  theme = "blue"
-    />
+      <Toggle
+        options={[
+          { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
+          { label: 'Pace berechnen', value: 'pace', icon: <Footprints size={16} strokeWidth={2.5} /> }
+        ]}
+        active={mode}
+        onChange={onModeChange}
+        theme="blue"
+      />
 
       <Label>Distanz</Label>
       <Card className="mb-5">
@@ -145,67 +159,65 @@ export const SwimTab: React.FC<Props> = ({
         />
       </Card>
 
-  {
-    mode === 'time' ? (
-      <>
-        <Label>Pace (MIN/100M)</Label>
-        <Card className="flex flex-col items-center">
-          <div className="flex items-center gap-4">
-            <VerticalPicker
-              value={formatSingleDigit(data.paceMinPer100m)}
-              onIncrease={() => updatePace(data.paceMinPer100m + 1, data.paceSecPer100m)}
-              onDecrease={() => updatePace(data.paceMinPer100m - 1, data.paceSecPer100m)}
-              onManualChange={(v) => updatePace(parseInt(v) || 0, data.paceSecPer100m)}
-            />
-            <span className="text-2xl font-bold text-slate-300">:</span>
-            <VerticalPicker
-              value={formatSingleDigit(data.paceSecPer100m)}
-              onIncrease={() => updatePace(data.paceMinPer100m, data.paceSecPer100m + 1)}
-              onDecrease={() => updatePace(data.paceMinPer100m, data.paceSecPer100m - 1)}
-              onManualChange={(v) => updatePace(data.paceMinPer100m, parseInt(v) || 0)}
-            />
-          </div>
-          <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            <span>Min</span>
-            <span>Sek</span>
-          </div>
-        </Card>
-      </>
-    ) : (
-    <>
-      <Label>Zielzeit</Label>
-      <Card className="flex flex-col items-center">
-        <div className="flex items-center gap-2">
-          <VerticalPicker
-            value={formatSingleDigit(targetHours)}
-            onIncrease={() => updateTargetTime(targetHours + 1, targetMinutes, targetSeconds)}
-            onDecrease={() => updateTargetTime(targetHours - 1, targetMinutes, targetSeconds)}
-            onManualChange={(v) => updateTargetTime(parseInt(v) || 0, targetMinutes, targetSeconds)}
-          />
-          <span className="text-xl font-bold text-slate-300">:</span>
-          <VerticalPicker
-            value={formatSingleDigit(targetMinutes)}
-            onIncrease={() => updateTargetTime(targetHours, targetMinutes + 1, targetSeconds)}
-            onDecrease={() => updateTargetTime(targetHours, targetMinutes - 1, targetSeconds)}
-            onManualChange={(v) => updateTargetTime(targetHours, parseInt(v) || 0, targetSeconds)}
-          />
-          <span className="text-xl font-bold text-slate-300">:</span>
-          <VerticalPicker
-            value={formatSingleDigit(targetSeconds)}
-            onIncrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds + 1)}
-            onDecrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds - 1)}
-            onManualChange={(v) => updateTargetTime(targetHours, targetMinutes, parseInt(v) || 0)}
-          />
-        </div>
-        <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          <span>Std</span>
-          <span>Min</span>
-          <span>Sek</span>
-        </div>
-      </Card>
-    </>
-  )
-  }
-    </DisciplineLayout >
+      {mode === 'time' ? (
+        <>
+          <Label>Pace (MIN/100M)</Label>
+          <Card className="flex flex-col items-center">
+            <div className="flex items-center gap-4">
+              <VerticalPicker
+                value={formatSingleDigit(data.paceMinPer100m)}
+                onIncrease={() => updatePace(data.paceMinPer100m + 1, data.paceSecPer100m)}
+                onDecrease={() => updatePace(data.paceMinPer100m - 1, data.paceSecPer100m)}
+                onManualChange={(v) => updatePace(parseInt(v) || 0, data.paceSecPer100m)}
+              />
+              <span className="text-2xl font-bold text-slate-300">:</span>
+              <VerticalPicker
+                value={formatSingleDigit(data.paceSecPer100m)}
+                onIncrease={() => updatePace(data.paceMinPer100m, data.paceSecPer100m + 1)}
+                onDecrease={() => updatePace(data.paceMinPer100m, data.paceSecPer100m - 1)}
+                onManualChange={(v) => updatePace(data.paceMinPer100m, parseInt(v) || 0)}
+              />
+            </div>
+            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <span>Min</span>
+              <span>Sek</span>
+            </div>
+          </Card>
+        </>
+      ) : (
+        <>
+          <Label>Zielzeit</Label>
+          <Card className="flex flex-col items-center">
+            <div className="flex items-center gap-2">
+              <VerticalPicker
+                value={formatSingleDigit(targetHours)}
+                onIncrease={() => updateTargetTime(targetHours + 1, targetMinutes, targetSeconds)}
+                onDecrease={() => updateTargetTime(targetHours - 1, targetMinutes, targetSeconds)}
+                onManualChange={(v) => updateTargetTime(parseInt(v) || 0, targetMinutes, targetSeconds)}
+              />
+              <span className="text-xl font-bold text-slate-300">:</span>
+              <VerticalPicker
+                value={formatSingleDigit(targetMinutes)}
+                onIncrease={() => updateTargetTime(targetHours, targetMinutes + 1, targetSeconds)}
+                onDecrease={() => updateTargetTime(targetHours, targetMinutes - 1, targetSeconds)}
+                onManualChange={(v) => updateTargetTime(targetHours, parseInt(v) || 0, targetSeconds)}
+              />
+              <span className="text-xl font-bold text-slate-300">:</span>
+              <VerticalPicker
+                value={formatSingleDigit(targetSeconds)}
+                onIncrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds + 1)}
+                onDecrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds - 1)}
+                onManualChange={(v) => updateTargetTime(targetHours, targetMinutes, parseInt(v) || 0)}
+              />
+            </div>
+            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <span>Std</span>
+              <span>Min</span>
+              <span>Sek</span>
+            </div>
+          </Card>
+        </>
+      )}
+    </DisciplineLayout>
   );
 };
