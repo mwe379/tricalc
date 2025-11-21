@@ -31,7 +31,7 @@ export const AdMobBanner: React.FC = () => {
                     // Deine BottomNav ist 84px hoch.
                     // Wir setzen margin auf 84 (oder 88 für etwas Luft), 
                     // damit der Banner GENAU ÜBER der Navigation schwebt.
-                    margin: 84,
+                    margin: 135,
 
                     isTesting: true
                 };
