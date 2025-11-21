@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { UserProfile } from '../types';
 import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
@@ -9,9 +8,11 @@ interface Props {
   userProfile: UserProfile;
   onUpdateProfile: (profile: UserProfile) => void;
   onClose: () => void;
+  onPurchase: () => void;
+  onRestore: () => void;
 }
 
-export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose }) => {
+export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onPurchase, onRestore }) => {
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
@@ -85,12 +86,20 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
                 <span>★ Pro Version Aktiviert</span>
               </div>
             ) : (
-              <button
-                onClick={() => onUpdateProfile({ ...userProfile, isPro: true })}
-                className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95"
-              >
-                Werbung entfernen (0,99 €)
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={onPurchase}
+                  className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95"
+                >
+                  Werbung entfernen (0,99 €)
+                </button>
+                <button
+                  onClick={onRestore}
+                  className="w-full text-slate-500 text-sm font-medium py-2 hover:text-slate-800 transition-colors"
+                >
+                  Käufe wiederherstellen
+                </button>
+              </div>
             )}
           </Card>
         </div>
