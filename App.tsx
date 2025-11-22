@@ -225,6 +225,7 @@ const App: React.FC = () => {
             onPurchase={purchase}
             onRestore={restore}
             product={product}
+            storeAvailable={storeAvailable}
           />
         ) : null;
       default:
