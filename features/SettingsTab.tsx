@@ -3,6 +3,7 @@ import { UserProfile } from '../types';
 import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
 import { ArrowLeft, User, Calendar } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
+import 'cordova-plugin-purchase';
 
 interface Props {
   userProfile: UserProfile;
@@ -10,9 +11,10 @@ interface Props {
   onClose: () => void;
   onPurchase: () => void;
   onRestore: () => void;
+  product: CdvPurchase.Product | null;
 }
 
-export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onPurchase, onRestore }) => {
+export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onPurchase, onRestore, product }) => {
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
@@ -27,6 +29,16 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
       isPro: userProfile.isPro
     });
     onClose();
+  };
+
+  const getPriceText = () => {
+    if (product && product.offers && product.offers.length > 0) {
+      const offer = product.offers[0];
+      if (offer.pricingPhases && offer.pricingPhases.length > 0) {
+        return offer.pricingPhases[0].price;
+      }
+    }
+    return "0,99 €";
   };
 
   return (
@@ -91,7 +103,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
                   onClick={onPurchase}
                   className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95"
                 >
-                  Werbung entfernen (0,99 €)
+                  Werbung entfernen ({getPriceText()})
                 </button>
                 <button
                   onClick={onRestore}

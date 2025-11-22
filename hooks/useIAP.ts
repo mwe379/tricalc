@@ -8,6 +8,7 @@ const PRODUCT_ID_REMOVE_ADS = 'remove_ads';
 export const useIAP = () => {
     const [isPro, setIsPro] = useState(false);
     const [storeAvailable, setStoreAvailable] = useState(false);
+    const [product, setProduct] = useState<CdvPurchase.Product | null>(null);
 
     useEffect(() => {
         const initStore = () => {
@@ -38,6 +39,15 @@ export const useIAP = () => {
                 })
                 .finished((transaction) => {
                     console.log('Transaction finished', transaction);
+                })
+                .updated((p) => {
+                    const product = p as unknown as CdvPurchase.Product;
+                    if (product.id === PRODUCT_ID_REMOVE_ADS && product.owned) {
+                        setProduct(product);
+                        setIsPro(true);
+                    } else if (product.id === PRODUCT_ID_REMOVE_ADS) {
+                        setProduct(product);
+                    }
                 });
 
             // Initialize the store
@@ -49,9 +59,12 @@ export const useIAP = () => {
                 console.log('Store ready');
                 setStoreAvailable(true);
                 // Check if already owned
-                const product = store.get(PRODUCT_ID_REMOVE_ADS);
-                if (product && product.owned) {
-                    setIsPro(true);
+                const p = store.get(PRODUCT_ID_REMOVE_ADS);
+                if (p) {
+                    setProduct(p);
+                    if (p.owned) {
+                        setIsPro(true);
+                    }
                 }
             });
         };
@@ -85,6 +98,7 @@ export const useIAP = () => {
     return {
         isPro,
         storeAvailable,
+        product,
         purchase,
         restore
     };

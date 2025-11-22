@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
   // -- IAP Hook --
-  const { isPro, purchase, restore } = useIAP();
+  const { isPro, purchase, restore, product } = useIAP();
 
   // Load profile from storage on mount
   useEffect(() => {
@@ -216,6 +216,7 @@ const App: React.FC = () => {
             onClose={closeSettings}
             onPurchase={purchase}
             onRestore={restore}
+            product={product}
           />
         ) : null;
       default:
