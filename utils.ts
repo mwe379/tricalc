@@ -1,59 +1,59 @@
 import { TimeComponents } from './types';
 
 export const formatTime = (totalSeconds: number): string => {
-  if (!isFinite(totalSeconds) || isNaN(totalSeconds)) return "0:00:00";
-  
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = Math.floor(totalSeconds % 60);
+    if (!isFinite(totalSeconds) || isNaN(totalSeconds)) return "0:00:00";
 
-  const pad = (num: number) => num.toString().padStart(2, '0');
-  // Format h:mm:ss (h is not padded if it's single digit, matching 0:15:00)
-  return `${h}:${pad(m)}:${pad(s)}`;
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
+
+    const pad = (num: number) => num.toString().padStart(2, '0');
+    // Format h:mm:ss (h is not padded if it's single digit, matching 0:15:00)
+    return `${h}:${pad(m)}:${pad(s)}`;
 };
 
 export const formatSingleDigit = (num: number): string => {
-  return num.toString().padStart(2, '0');
+    return num.toString().padStart(2, '0');
 };
 
 export const calculateSwimTime = (distanceMeters: number, paceMin: number, paceSec: number): number => {
-  const paceInSeconds = (paceMin * 60) + paceSec;
-  // Pace is per 100m
-  const timeInSeconds = (distanceMeters / 100) * paceInSeconds;
-  return timeInSeconds;
+    const paceInSeconds = (paceMin * 60) + paceSec;
+    // Pace is per 100m
+    const timeInSeconds = (distanceMeters / 100) * paceInSeconds;
+    return timeInSeconds;
 };
 
 export const calculateBikeTime = (distanceKm: number, speedKmh: number): number => {
-  if (speedKmh === 0) return 0;
-  // Time = Distance / Speed (Hours) -> Convert to seconds
-  return (distanceKm / speedKmh) * 3600;
+    if (speedKmh === 0) return 0;
+    // Time = Distance / Speed (Hours) -> Convert to seconds
+    return (distanceKm / speedKmh) * 3600;
 };
 
 export const calculateRunTime = (distanceKm: number, paceMin: number, paceSec: number): number => {
-  const paceInSeconds = (paceMin * 60) + paceSec;
-  // Pace is per Km
-  return distanceKm * paceInSeconds;
+    const paceInSeconds = (paceMin * 60) + paceSec;
+    // Pace is per Km
+    return distanceKm * paceInSeconds;
 };
 
 export const toTimeComponents = (totalSeconds: number): TimeComponents => {
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = Math.floor(totalSeconds % 60);
-  return { hours: h, minutes: m, seconds: s };
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
+    return { hours: h, minutes: m, seconds: s };
 };
 
 export const calculateAgeGroup = (birthDateString: string): string => {
-  if (!birthDateString) return '';
-  
-  const birthYear = new Date(birthDateString).getFullYear();
-  const currentYear = new Date().getFullYear();
-  const age = currentYear - birthYear;
+    if (!birthDateString) return '';
 
-  // Triathlon AK logic: 5 year steps usually starting around 20. 
-  const lowerBound = Math.floor(age / 5) * 5;
-  const upperBound = lowerBound + 4;
+    const birthYear = new Date(birthDateString).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
 
-  return `AK ${lowerBound}-${upperBound}`;
+    // Triathlon AK logic: 5 year steps usually starting around 20. 
+    const lowerBound = Math.floor(age / 5) * 5;
+    const upperBound = lowerBound + 4;
+
+    return `AK ${lowerBound}-${upperBound}`;
 };
 
 // --- BENCHMARK DATABASE AND LOGIC ---
@@ -65,7 +65,7 @@ type Gender = 'male' | 'female';
 // Base times (in seconds) for an Average "Young" Male (Age 25-29)
 // These are 50th percentile approximations for active triathletes
 const BASE_TIMES: Record<string, Record<Discipline, number>> = {
-    'Sprint': { 
+    'Sprint': {
         swim: 15 * 60, // 750m @ 2:00/100m
         bike: 40 * 60, // 20km @ 30km/h
         run: 25 * 60   // 5km @ 5:00/km
@@ -114,7 +114,7 @@ const getAgeFactor = (age: number): number => {
 };
 
 export const identifyDistance = (
-    discipline: Discipline, 
+    discipline: Discipline,
     value: number // meters for swim, km for bike/run
 ): DistanceType => {
     // Fuzzy matching with tolerance
@@ -151,7 +151,7 @@ export const identifyRaceType = (swimMeters: number, bikeKm: number, runKm: numb
 };
 
 const calculatePercentileFromStats = (
-    seconds: number, 
+    seconds: number,
     expectedAverageSeconds: number
 ): number => {
     // Standard Deviation approximation (roughly 15% of time for mass field)
@@ -171,13 +171,13 @@ const calculatePercentileFromStats = (
 };
 
 export const calculatePerformancePercentile = (
-    seconds: number, 
-    discipline: Discipline, 
+    seconds: number,
+    discipline: Discipline,
     distanceValue: number,
-    gender: Gender, 
+    gender: Gender,
     birthDate: string
 ): { percentile: number, akLabel: string, valid: boolean } => {
-    
+
     const distType = identifyDistance(discipline, distanceValue);
     if (!distType) return { percentile: 0, akLabel: '', valid: false };
 
@@ -207,20 +207,20 @@ export const calculateTotalPerformancePercentile = (
     gender: Gender,
     birthDate: string
 ): { percentile: number, akLabel: string, valid: boolean } => {
-    
+
     const distType = identifyRaceType(swimMeters, bikeKm, runKm);
     if (!distType) return { percentile: 0, akLabel: '', valid: false };
 
     const birthYear = new Date(birthDate).getFullYear();
     const age = new Date().getFullYear() - birthYear;
     const akLabel = calculateAgeGroup(birthDate);
-    
+
     const baseTimes = BASE_TIMES[distType];
     const baseTotal = baseTimes.swim + baseTimes.bike + baseTimes.run + BASE_TRANSITIONS[distType];
-    
+
     const ageMod = getAgeFactor(age);
     const genderMod = GENDER_FACTOR[gender];
-    
+
     const expectedAverageSeconds = baseTotal * ageMod * genderMod;
     const percentile = calculatePercentileFromStats(totalSeconds, expectedAverageSeconds);
 
@@ -229,4 +229,10 @@ export const calculateTotalPerformancePercentile = (
         akLabel,
         valid: true
     };
+};
+
+export const parseManualInput = (val: string): number => {
+    const normalized = val.replace(',', '.');
+    const floatVal = parseFloat(normalized);
+    return isNaN(floatVal) ? 0 : floatVal;
 };

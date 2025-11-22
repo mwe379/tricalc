@@ -1,12 +1,12 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { BikeState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
   StepperInput, PresetGroup, VerticalPicker
 } from '../components/MD3Components';
 import { AdMobBanner } from '../components/AdMobBanner';
-import { calculateBikeTime, formatTime, formatSingleDigit } from '../utils';
+import { calculateBikeTime, formatTime, parseManualInput, formatSingleDigit } from '../utils';
+import { useTargetTime } from '../hooks/useCalculatorLogic';
 import { Timer, RotateCw } from 'lucide-react';
 
 interface Props {
@@ -27,9 +27,7 @@ export const BikeTab: React.FC<Props> = ({
 }) => {
 
   // Target Time State
-  const [targetHours, setTargetHours] = useState(0);
-  const [targetMinutes, setTargetMinutes] = useState(40);
-  const [targetSeconds, setTargetSeconds] = useState(0);
+  const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 40, 0);
 
   const calculateResults = () => {
     if (mode === 'time') {
@@ -42,18 +40,16 @@ export const BikeTab: React.FC<Props> = ({
     } else {
       // Result is Speed
       // Speed = Dist / Time(h)
-      const totalTargetHours = targetHours + (targetMinutes / 60) + (targetSeconds / 3600);
+      const totalTargetHours = totalSeconds / 3600;
       let speed = 0;
       if (totalTargetHours > 0) {
         speed = data.distanceKm / totalTargetHours;
       }
 
-      const totalTargetSeconds = (targetHours * 3600) + (targetMinutes * 60) + targetSeconds;
-
       return {
         displayMain: `${speed.toFixed(1)} km/h`,
         displayLabel: 'Ø GESCHWINDIGKEIT',
-        secondsForTotal: totalTargetSeconds
+        secondsForTotal: totalSeconds
       };
     }
   };
@@ -66,9 +62,8 @@ export const BikeTab: React.FC<Props> = ({
   };
 
   const handleDistManual = (val: string) => {
-    const normalized = val.replace(',', '.');
-    const floatVal = parseFloat(normalized);
-    if (!isNaN(floatVal)) {
+    const floatVal = parseManualInput(val);
+    if (floatVal > 0 || val === '0') {
       onChange({ ...data, distanceKm: floatVal });
     }
   };
@@ -92,16 +87,6 @@ export const BikeTab: React.FC<Props> = ({
     if (i < 0) { i = 0; d = 0; }
     const newSpeed = i + (d / 10);
     onChange({ ...data, speedKmh: newSpeed });
-  };
-
-  const updateTargetTime = (h: number, m: number, s: number) => {
-    let nh = h; let nm = m; let ns = s;
-    if (ns >= 60) { nm++; ns = 0; }
-    if (ns < 0) { nm--; ns = 59; }
-    if (nm >= 60) { nh++; nm = 0; }
-    if (nm < 0) { nh--; nm = 59; }
-    if (nh < 0) { nh = 0; nm = 0; ns = 0; }
-    setTargetHours(nh); setTargetMinutes(nm); setTargetSeconds(ns);
   };
 
   return (
@@ -183,24 +168,24 @@ export const BikeTab: React.FC<Props> = ({
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
-                value={formatSingleDigit(targetHours)}
-                onIncrease={() => updateTargetTime(targetHours + 1, targetMinutes, targetSeconds)}
-                onDecrease={() => updateTargetTime(targetHours - 1, targetMinutes, targetSeconds)}
-                onManualChange={(v) => updateTargetTime(parseInt(v) || 0, targetMinutes, targetSeconds)}
+                value={formatSingleDigit(hours)}
+                onIncrease={() => updateTime(hours + 1, minutes, seconds)}
+                onDecrease={() => updateTime(hours - 1, minutes, seconds)}
+                onManualChange={(v) => updateTime(parseInt(v) || 0, minutes, seconds)}
               />
               <span className="text-xl font-bold text-slate-300">:</span>
               <VerticalPicker
-                value={formatSingleDigit(targetMinutes)}
-                onIncrease={() => updateTargetTime(targetHours, targetMinutes + 1, targetSeconds)}
-                onDecrease={() => updateTargetTime(targetHours, targetMinutes - 1, targetSeconds)}
-                onManualChange={(v) => updateTargetTime(targetHours, parseInt(v) || 0, targetSeconds)}
+                value={formatSingleDigit(minutes)}
+                onIncrease={() => updateTime(hours, minutes + 1, seconds)}
+                onDecrease={() => updateTime(hours, minutes - 1, seconds)}
+                onManualChange={(v) => updateTime(hours, parseInt(v) || 0, seconds)}
               />
               <span className="text-xl font-bold text-slate-300">:</span>
               <VerticalPicker
-                value={formatSingleDigit(targetSeconds)}
-                onIncrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds + 1)}
-                onDecrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds - 1)}
-                onManualChange={(v) => updateTargetTime(targetHours, targetMinutes, parseInt(v) || 0)}
+                value={formatSingleDigit(seconds)}
+                onIncrease={() => updateTime(hours, minutes, seconds + 1)}
+                onDecrease={() => updateTime(hours, minutes, seconds - 1)}
+                onManualChange={(v) => updateTime(hours, minutes, parseInt(v) || 0)}
               />
             </div>
             <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">

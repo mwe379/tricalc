@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SwimState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
   StepperInput, PresetGroup, VerticalPicker
 } from '../components/MD3Components';
 import { AdMobBanner } from '../components/AdMobBanner';
-import { calculateSwimTime, formatTime, formatSingleDigit } from '../utils';
+import { calculateSwimTime, formatTime, formatSingleDigit, parseManualInput } from '../utils';
+import { useTargetTime, usePace } from '../hooks/useCalculatorLogic';
 import { Timer, Footprints } from 'lucide-react';
 
 interface Props {
@@ -26,9 +27,10 @@ export const SwimTab: React.FC<Props> = ({
 }) => {
 
   // Target Time State (for "Pace berechnen" mode)
-  const [targetHours, setTargetHours] = useState(0);
-  const [targetMinutes, setTargetMinutes] = useState(30);
-  const [targetSeconds, setTargetSeconds] = useState(0);
+  const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 30, 0);
+
+  // Pace Logic Helper
+  const { calculateNewPace } = usePace();
 
   // 1. Calculate Results based on Mode
   const calculateResults = () => {
@@ -43,12 +45,11 @@ export const SwimTab: React.FC<Props> = ({
     } else {
       // Result is Pace
       // Pace = Time / (Distance / 100)
-      const totalTargetSeconds = (targetHours * 3600) + (targetMinutes * 60) + targetSeconds;
       const distanceHundreds = data.distanceMeters / 100;
 
       let paceSecondsTotal = 0;
       if (distanceHundreds > 0) {
-        paceSecondsTotal = totalTargetSeconds / distanceHundreds;
+        paceSecondsTotal = totalSeconds / distanceHundreds;
       }
 
       const pMin = Math.floor(paceSecondsTotal / 60);
@@ -57,7 +58,7 @@ export const SwimTab: React.FC<Props> = ({
       return {
         displayMain: `${pMin}:${formatSingleDigit(pSec)}/100m`,
         displayLabel: 'Ø PACE',
-        secondsForTotal: totalTargetSeconds
+        secondsForTotal: totalSeconds
       };
     }
   };
@@ -69,10 +70,8 @@ export const SwimTab: React.FC<Props> = ({
   const handleDistDecrease = () => onChange({ ...data, distanceMeters: Math.max(0, data.distanceMeters - 10) });
 
   const handleDistManual = (val: string) => {
-    // Input comes in from StepperInput local state. Replace comma with dot.
-    const normalized = val.replace(',', '.');
-    const floatVal = parseFloat(normalized);
-    if (!isNaN(floatVal)) {
+    const floatVal = parseManualInput(val);
+    if (floatVal > 0 || val === '0') {
       // Input is in KM (1.5), State is in Meters (1500)
       onChange({ ...data, distanceMeters: Math.round(floatVal * 1000) });
     }
@@ -88,22 +87,8 @@ export const SwimTab: React.FC<Props> = ({
 
   // Handlers for Pace
   const updatePace = (min: number, sec: number) => {
-    let newMin = min; let newSec = sec;
-    if (newSec >= 60) { newMin++; newSec = 0; }
-    if (newSec < 0) { newMin--; newSec = 59; }
-    if (newMin < 0) { newMin = 0; newSec = 0; }
+    const { min: newMin, sec: newSec } = calculateNewPace(min, sec);
     onChange({ ...data, paceMinPer100m: newMin, paceSecPer100m: newSec });
-  };
-
-  // Handlers for Target Time
-  const updateTargetTime = (h: number, m: number, s: number) => {
-    let nh = h; let nm = m; let ns = s;
-    if (ns >= 60) { nm++; ns = 0; }
-    if (ns < 0) { nm--; ns = 59; }
-    if (nm >= 60) { nh++; nm = 0; }
-    if (nm < 0) { nh--; nm = 59; }
-    if (nh < 0) { nh = 0; nm = 0; ns = 0; }
-    setTargetHours(nh); setTargetMinutes(nm); setTargetSeconds(ns);
   };
 
   // Render Distance in KM
@@ -190,24 +175,24 @@ export const SwimTab: React.FC<Props> = ({
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
-                value={formatSingleDigit(targetHours)}
-                onIncrease={() => updateTargetTime(targetHours + 1, targetMinutes, targetSeconds)}
-                onDecrease={() => updateTargetTime(targetHours - 1, targetMinutes, targetSeconds)}
-                onManualChange={(v) => updateTargetTime(parseInt(v) || 0, targetMinutes, targetSeconds)}
+                value={formatSingleDigit(hours)}
+                onIncrease={() => updateTime(hours + 1, minutes, seconds)}
+                onDecrease={() => updateTime(hours - 1, minutes, seconds)}
+                onManualChange={(v) => updateTime(parseInt(v) || 0, minutes, seconds)}
               />
               <span className="text-xl font-bold text-slate-300">:</span>
               <VerticalPicker
-                value={formatSingleDigit(targetMinutes)}
-                onIncrease={() => updateTargetTime(targetHours, targetMinutes + 1, targetSeconds)}
-                onDecrease={() => updateTargetTime(targetHours, targetMinutes - 1, targetSeconds)}
-                onManualChange={(v) => updateTargetTime(targetHours, parseInt(v) || 0, targetSeconds)}
+                value={formatSingleDigit(minutes)}
+                onIncrease={() => updateTime(hours, minutes + 1, seconds)}
+                onDecrease={() => updateTime(hours, minutes - 1, seconds)}
+                onManualChange={(v) => updateTime(hours, parseInt(v) || 0, seconds)}
               />
               <span className="text-xl font-bold text-slate-300">:</span>
               <VerticalPicker
-                value={formatSingleDigit(targetSeconds)}
-                onIncrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds + 1)}
-                onDecrease={() => updateTargetTime(targetHours, targetMinutes, targetSeconds - 1)}
-                onManualChange={(v) => updateTargetTime(targetHours, targetMinutes, parseInt(v) || 0)}
+                value={formatSingleDigit(seconds)}
+                onIncrease={() => updateTime(hours, minutes, seconds + 1)}
+                onDecrease={() => updateTime(hours, minutes, seconds - 1)}
+                onManualChange={(v) => updateTime(hours, minutes, parseInt(v) || 0)}
               />
             </div>
             <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">

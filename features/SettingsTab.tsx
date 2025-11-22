@@ -121,14 +121,6 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
           <p className="text-[10px] text-slate-400">
             TriCalc v1.2.1
           </p>
-          {/* DEBUG INFO - REMOVE IN PRODUCTION */}
-          <div className="mt-4 p-2 bg-slate-200 rounded text-[10px] text-slate-600 font-mono text-left">
-            <p>Store Ready: {storeAvailable ? 'YES' : 'NO'}</p>
-            <p>Is Pro (Hook): {userProfile.isPro ? 'YES' : 'NO'}</p>
-            <p>Product Loaded: {product ? 'YES' : 'NO'}</p>
-            <p>Product Owned: {product?.owned ? 'YES' : 'NO'}</p>
-            <p>Product ID: {product?.id || 'N/A'}</p>
-          </div>
         </div>
 
       </div>

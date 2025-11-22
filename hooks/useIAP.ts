@@ -13,7 +13,7 @@ export const useIAP = () => {
     useEffect(() => {
         const initStore = () => {
             if (!window.CdvPurchase) {
-                console.log('CdvPurchase not available yet');
+
                 return;
             }
 
@@ -29,16 +29,16 @@ export const useIAP = () => {
             // Setup event listeners
             store.when()
                 .approved((transaction) => {
-                    console.log('Transaction approved', transaction);
+
                     transaction.verify();
                 })
                 .verified((receipt) => {
-                    console.log('Receipt verified', receipt);
+
                     setIsPro(true);
                     receipt.finish();
                 })
                 .finished((transaction) => {
-                    console.log('Transaction finished', transaction);
+
                 })
                 .updated((p) => {
                     const product = p as unknown as CdvPurchase.Product;
@@ -54,7 +54,7 @@ export const useIAP = () => {
             ]);
 
             store.ready(() => {
-                console.log('Store ready');
+
                 setStoreAvailable(true);
                 // Check if already owned
                 const p = store.get(PRODUCT_ID_REMOVE_ADS);
