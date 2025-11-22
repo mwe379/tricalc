@@ -42,11 +42,9 @@ export const useIAP = () => {
                 })
                 .updated((p) => {
                     const product = p as unknown as CdvPurchase.Product;
-                    if (product.id === PRODUCT_ID_REMOVE_ADS && product.owned) {
+                    if (product.id === PRODUCT_ID_REMOVE_ADS) {
                         setProduct(product);
-                        setIsPro(true);
-                    } else if (product.id === PRODUCT_ID_REMOVE_ADS) {
-                        setProduct(product);
+                        setIsPro(product.owned);
                     }
                 });
 
@@ -62,9 +60,7 @@ export const useIAP = () => {
                 const p = store.get(PRODUCT_ID_REMOVE_ADS);
                 if (p) {
                     setProduct(p);
-                    if (p.owned) {
-                        setIsPro(true);
-                    }
+                    setIsPro(p.owned);
                 }
             });
         };

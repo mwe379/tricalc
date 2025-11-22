@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
   // -- IAP Hook --
-  const { isPro, purchase, restore, product } = useIAP();
+  const { isPro, purchase, restore, product, storeAvailable } = useIAP();
 
   // Load profile from storage on mount
   useEffect(() => {
@@ -33,12 +33,18 @@ const App: React.FC = () => {
 
   // Sync IAP status with user profile
   useEffect(() => {
-    if (userProfile && isPro !== userProfile.isPro) {
-      const updated = { ...userProfile, isPro };
-      setUserProfile(updated);
-      localStorage.setItem('triCalcProfile', JSON.stringify(updated));
+    if (!userProfile) return;
+
+    // Only sync if the store is ready to avoid accidental downgrades on startup
+    // OR if isPro is true (we can always upgrade)
+    if (storeAvailable || isPro) {
+      if (isPro !== userProfile.isPro) {
+        const updated = { ...userProfile, isPro };
+        setUserProfile(updated);
+        localStorage.setItem('triCalcProfile', JSON.stringify(updated));
+      }
     }
-  }, [isPro, userProfile]);
+  }, [isPro, userProfile, storeAvailable]);
 
   const handleOnboardingComplete = (profile: UserProfile) => {
     localStorage.setItem('triCalcProfile', JSON.stringify(profile));
