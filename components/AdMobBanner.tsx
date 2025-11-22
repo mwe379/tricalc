@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { AdMob, BannerAdSize, BannerAdPosition, BannerAdOptions } from '@capacitor-community/admob';
 
-const ANDROID_TEST_ID = 'ca-app-pub-3940256099942544/6300978111';
+const ANDROID_BANNER_ID = 'ca-app-pub-9120977887635362/3605476190';
 
 export const AdMobBanner: React.FC = () => {
 
@@ -11,20 +11,20 @@ export const AdMobBanner: React.FC = () => {
         const initAndShowBanner = async () => {
             try {
                 await AdMob.initialize({
-                    initializeForTesting: true,
+                    initializeForTesting: false,
                 });
 
                 if (!active) return;
 
                 const options: BannerAdOptions = {
-                    adId: ANDROID_TEST_ID,
+                    adId: ANDROID_BANNER_ID,
                     adSize: BannerAdSize.ADAPTIVE_BANNER,
 
                     // ÄNDERUNG: Wir platzieren ihn OBEN, das ist layout-technisch viel sicherer
                     position: BannerAdPosition.TOP_CENTER,
                     margin: 0,
 
-                    isTesting: true
+                    isTesting: false
                 };
 
                 await AdMob.showBanner(options);
