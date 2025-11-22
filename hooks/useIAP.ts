@@ -62,6 +62,8 @@ export const useIAP = () => {
                     setProduct(p);
                     setIsPro(p.owned);
                 }
+                // Force update to ensure we have the latest state (e.g. after refund)
+                store.update();
             });
         };
 

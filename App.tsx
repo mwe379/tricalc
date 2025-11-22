@@ -10,6 +10,7 @@ import { Tab, SwimState, BikeState, RunState, TransitionState, UserProfile } fro
 import { calculateAgeGroup } from './utils';
 
 import { useIAP } from './hooks/useIAP';
+import { profile } from 'console';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Swim);
@@ -39,6 +40,7 @@ const App: React.FC = () => {
     // OR if isPro is true (we can always upgrade)
     if (storeAvailable || isPro) {
       if (isPro !== userProfile.isPro) {
+        console.log(`Updating Pro status: ${userProfile.isPro} -> ${isPro}`);
         const updated = { ...userProfile, isPro };
         setUserProfile(updated);
         localStorage.setItem('triCalcProfile', JSON.stringify(updated));
