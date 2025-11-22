@@ -9,6 +9,9 @@ import { SettingsTab } from './features/SettingsTab';
 import { Tab, SwimState, BikeState, RunState, TransitionState, UserProfile } from './types';
 import { calculateAgeGroup } from './utils';
 
+import { useIAP } from './hooks/useIAP';
+import { profile } from 'console';
+
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Swim);
   const [previousTab, setPreviousTab] = useState<Tab>(Tab.Swim);
@@ -16,6 +19,9 @@ const App: React.FC = () => {
   // -- User Profile / Onboarding --
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+
+  // -- IAP Hook --
+  const { isPro, purchase, restore, product, storeAvailable } = useIAP();
 
   // Load profile from storage on mount
   useEffect(() => {
@@ -26,6 +32,22 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Sync IAP status with user profile
+  useEffect(() => {
+    if (!userProfile) return;
+
+    // Only sync if the store is ready to avoid accidental downgrades on startup
+    // OR if isPro is true (we can always upgrade)
+    if (storeAvailable || isPro) {
+      if (isPro !== userProfile.isPro) {
+
+        const updated = { ...userProfile, isPro };
+        setUserProfile(updated);
+        localStorage.setItem('triCalcProfile', JSON.stringify(updated));
+      }
+    }
+  }, [isPro, userProfile, storeAvailable]);
+
   const handleOnboardingComplete = (profile: UserProfile) => {
     localStorage.setItem('triCalcProfile', JSON.stringify(profile));
     setUserProfile(profile);
@@ -33,8 +55,10 @@ const App: React.FC = () => {
   };
 
   const handleUpdateProfile = (updatedProfile: UserProfile) => {
-    localStorage.setItem('triCalcProfile', JSON.stringify(updatedProfile));
-    setUserProfile(updatedProfile);
+    // Ensure we don't lose the pro status if it's managed by IAP
+    const profileWithPro = { ...updatedProfile, isPro: isPro || updatedProfile.isPro };
+    localStorage.setItem('triCalcProfile', JSON.stringify(profileWithPro));
+    setUserProfile(profileWithPro);
   }
 
   const getHeaderSubtitle = () => {
@@ -198,6 +222,10 @@ const App: React.FC = () => {
             userProfile={userProfile}
             onUpdateProfile={handleUpdateProfile}
             onClose={closeSettings}
+            onPurchase={purchase}
+            onRestore={restore}
+            product={product}
+            storeAvailable={storeAvailable}
           />
         ) : null;
       default:
