@@ -100,7 +100,7 @@ export const RunTab: React.FC<Props> = ({
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
-        textColor="text-[#047857]"
+        textColor="text-emerald-700"
         onAdd={() => onSave(secondsForTotal)}
         subLabel={t('actions.addToTotal')}
         addedLabel={t('actions.added')}

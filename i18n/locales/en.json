@@ -81,7 +81,8 @@
     "total": {
         "transitions": "Transitions",
         "totalTime": "Total Time",
-        "targetTime": "TARGET TIME"
+        "targetTime": "TARGET TIME",
+        "fasterThan": "Faster than {{percentile}}% of AG ({{akLabel}})"
     },
     "presets": {
         "sprint": "Sprint",

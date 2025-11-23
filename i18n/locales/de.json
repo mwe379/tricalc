@@ -81,7 +81,8 @@
     "total": {
         "transitions": "Wechselzeiten",
         "totalTime": "Gesamtzeit",
-        "targetTime": "ZIELZEIT"
+        "targetTime": "ZIELZEIT",
+        "fasterThan": "Schneller als {{percentile}}% der AK ({{akLabel}})"
     },
     "presets": {
         "sprint": "Sprint",

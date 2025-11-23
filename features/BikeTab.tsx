@@ -103,7 +103,7 @@ export const BikeTab: React.FC<Props> = ({
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
-        textColor="text-[#c2410c]"
+        textColor="text-orange-700"
         onAdd={() => onSave(secondsForTotal)}
         subLabel={t('actions.addToTotal')}
         addedLabel={t('actions.added')}

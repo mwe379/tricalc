@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronUp, ChevronDown, Plus, Minus, Settings, Trash2, Check, X, Trophy } from 'lucide-react';
 
 // -- Types --
@@ -146,10 +147,11 @@ export const PerformanceBadge = ({
   percentile: number;
   akLabel: string;
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f3e8ff] rounded-full text-[#7e22ce] text-xs font-bold mb-2 shadow-sm border border-[#e9d5ff] animate-in zoom-in-95">
       <Trophy size={14} fill="currentColor" className="text-[#a855f7]" />
-      <span>Schneller als {percentile}% der AK ({akLabel})</span>
+      <span>{t('total.fasterThan', { percentile, akLabel })}</span>
     </div>
   );
 };

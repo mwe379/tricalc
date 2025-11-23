@@ -109,7 +109,7 @@ export const SwimTab: React.FC<Props> = ({
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
-        textColor="text-[#0ea5e9]"
+        textColor="text-blue-700"
         onAdd={() => onSave(secondsForTotal)}
         subLabel={t('actions.addToTotal')}
         addedLabel={t('actions.added')}
