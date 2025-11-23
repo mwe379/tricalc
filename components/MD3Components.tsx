@@ -79,7 +79,7 @@ export const DisciplineLayout = ({
   // Dynamic padding to account for Status Bar + Ad + Visual Spacing
   // Base spacing: 72px (approx pt-18/pt-20)
   // Ad height: 64px (approx pt-16)
-  const baseSpacing = '72px';
+  const baseSpacing = '64px';
   const adHeight = '64px';
 
   const paddingTopStyle = {
