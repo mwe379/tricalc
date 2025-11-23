@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Tab } from '../types';
 import { Waves, Bike, Footprints, Flag } from 'lucide-react';
 
@@ -26,10 +27,10 @@ const NavItem: React.FC<{
           ${isActive ? activeColorClass : 'bg-transparent text-slate-400 group-hover:bg-slate-50'}
         `}
       >
-        {React.cloneElement(icon as React.ReactElement<any>, { 
-            size: 22, 
-            strokeWidth: isActive ? 2.5 : 2,
-            className: isActive ? activeTextClass : 'text-slate-400'
+        {React.cloneElement(icon as React.ReactElement<any>, {
+          size: 22,
+          strokeWidth: isActive ? 2.5 : 2,
+          className: isActive ? activeTextClass : 'text-slate-400'
         })}
       </div>
       <span className={`text-[11px] font-medium transition-colors duration-200 ${isActive ? 'text-slate-900' : 'text-slate-400'}`}>
@@ -40,11 +41,13 @@ const NavItem: React.FC<{
 };
 
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed bottom-0 left-0 right-0 h-[84px] bg-white border-t border-slate-200 flex items-center justify-around z-50 pb-4 md:pb-0 max-w-md mx-auto w-full shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.03)]">
       <NavItem
         icon={<Waves />}
-        label="Schwimmen"
+        label={t('nav.swim')}
         isActive={activeTab === Tab.Swim}
         onClick={() => onTabChange(Tab.Swim)}
         activeColorClass="bg-blue-100"
@@ -52,7 +55,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
       />
       <NavItem
         icon={<Bike />}
-        label="Rad"
+        label={t('nav.bike')}
         isActive={activeTab === Tab.Bike}
         onClick={() => onTabChange(Tab.Bike)}
         activeColorClass="bg-orange-100"
@@ -60,7 +63,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
       />
       <NavItem
         icon={<Footprints />}
-        label="Laufen"
+        label={t('nav.run')}
         isActive={activeTab === Tab.Run}
         onClick={() => onTabChange(Tab.Run)}
         activeColorClass="bg-emerald-100"
@@ -68,7 +71,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
       />
       <NavItem
         icon={<Flag />}
-        label="Total"
+        label={t('nav.total')}
         isActive={activeTab === Tab.Total}
         onClick={() => onTabChange(Tab.Total)}
         activeColorClass="bg-indigo-100"

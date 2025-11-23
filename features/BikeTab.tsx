@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BikeState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
@@ -25,6 +26,7 @@ export const BikeTab: React.FC<Props> = ({
   data, onChange, mode, onModeChange, onPresetChange, onSave,
   headerSubtitle, onOpenSettings, userProfile
 }) => {
+  const { t } = useTranslation();
 
   // Target Time State
   const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 40, 0);
@@ -34,7 +36,7 @@ export const BikeTab: React.FC<Props> = ({
       const secs = calculateBikeTime(data.distanceKm, data.speedKmh);
       return {
         displayMain: formatTime(secs),
-        displayLabel: 'Geschätzte Radzeit',
+        displayLabel: t('bike.estimatedTime', 'Estimated Bike Time'),
         secondsForTotal: secs
       };
     } else {
@@ -48,7 +50,7 @@ export const BikeTab: React.FC<Props> = ({
 
       return {
         displayMain: `${speed.toFixed(1)} km/h`,
-        displayLabel: 'Ø GESCHWINDIGKEIT',
+        displayLabel: t('bike.avgSpeed', 'Ø SPEED'),
         secondsForTotal: totalSeconds
       };
     }
@@ -92,7 +94,7 @@ export const BikeTab: React.FC<Props> = ({
   return (
     <DisciplineLayout
       theme="orange"
-      title="Radfahren"
+      title={t('nav.bike')}
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
       hasTopAd={!userProfile?.isPro}
@@ -103,33 +105,35 @@ export const BikeTab: React.FC<Props> = ({
         time={displayMain}
         textColor="text-[#c2410c]"
         onAdd={() => onSave(secondsForTotal)}
+        subLabel={t('actions.addToTotal')}
+        addedLabel={t('actions.added')}
       />
 
       <Toggle
         options={[
-          { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
-          { label: 'Tempo berechnen', value: 'pace', icon: <RotateCw size={16} strokeWidth={2.5} /> }
+          { label: t('bike.calcTime', 'Calculate Time'), value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
+          { label: t('bike.calcSpeed', 'Calculate Speed'), value: 'pace', icon: <RotateCw size={16} strokeWidth={2.5} /> }
         ]}
         active={mode}
         onChange={onModeChange}
         theme="orange"
       />
 
-      <Label>Distanz</Label>
+      <Label>{t('bike.distance')}</Label>
       <Card className="mb-5">
         <StepperInput
           value={data.distanceKm.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
-          unit="KM"
+          unit={t('units.km')}
           onIncrease={() => updateDist(0.1)}
           onDecrease={() => updateDist(-0.1)}
           onManualChange={handleDistManual}
         />
         <PresetGroup
           options={[
-            { label: 'Sprint', value: 20 },
-            { label: 'Olympisch', value: 40 },
-            { label: '70.3 (Halb)', value: 90 },
-            { label: '140.6 (Lang)', value: 180 },
+            { label: t('presets.sprint'), value: 20 },
+            { label: t('presets.olympic'), value: 40 },
+            { label: t('presets.half'), value: 90 },
+            { label: t('presets.full'), value: 180 },
           ]}
           activeValue={data.distanceKm}
           onSelect={handlePreset}
@@ -139,7 +143,7 @@ export const BikeTab: React.FC<Props> = ({
 
       {mode === 'time' ? (
         <>
-          <Label>Durchschnittsgeschwindigkeit</Label>
+          <Label>{t('bike.avgSpeedLabel', 'Average Speed')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-4">
               <VerticalPicker
@@ -157,14 +161,14 @@ export const BikeTab: React.FC<Props> = ({
               />
             </div>
             <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>KM/H</span>
-              <span>DEZ</span>
+              <span>{t('units.kmh', 'KM/H')}</span>
+              <span>{t('units.dec', 'DEC')}</span>
             </div>
           </Card>
         </>
       ) : (
         <>
-          <Label>Zielzeit</Label>
+          <Label>{t('bike.targetTime', 'Target Time')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
@@ -189,9 +193,9 @@ export const BikeTab: React.FC<Props> = ({
               />
             </div>
             <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Std</span>
-              <span>Min</span>
-              <span>Sek</span>
+              <span>{t('units.hours')}</span>
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>

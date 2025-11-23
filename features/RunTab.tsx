@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { RunState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
@@ -25,6 +26,7 @@ export const RunTab: React.FC<Props> = ({
   data, onChange, mode, onModeChange, onPresetChange, onSave,
   headerSubtitle, onOpenSettings, userProfile
 }) => {
+  const { t } = useTranslation();
 
   // Target Time State
   const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 30, 0);
@@ -37,7 +39,7 @@ export const RunTab: React.FC<Props> = ({
       const secs = calculateRunTime(data.distanceKm, data.paceMinPerKm, data.paceSecPerKm);
       return {
         displayMain: formatTime(secs),
-        displayLabel: 'Geschätzte Laufzeit',
+        displayLabel: t('run.estimatedTime', 'Estimated Run Time'),
         secondsForTotal: secs
       };
     } else {
@@ -53,7 +55,7 @@ export const RunTab: React.FC<Props> = ({
 
       return {
         displayMain: `${pMin}:${formatSingleDigit(pSec)}/km`,
-        displayLabel: 'Ø PACE',
+        displayLabel: t('run.avgPace', 'Ø PACE'),
         secondsForTotal: totalSeconds
       };
     }
@@ -89,7 +91,7 @@ export const RunTab: React.FC<Props> = ({
   return (
     <DisciplineLayout
       theme="green"
-      title="Laufen"
+      title={t('nav.run')}
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
       hasTopAd={!userProfile?.isPro}
@@ -100,33 +102,35 @@ export const RunTab: React.FC<Props> = ({
         time={displayMain}
         textColor="text-[#047857]"
         onAdd={() => onSave(secondsForTotal)}
+        subLabel={t('actions.addToTotal')}
+        addedLabel={t('actions.added')}
       />
 
       <Toggle
         options={[
-          { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
-          { label: 'Pace berechnen', value: 'pace', icon: <Footprints size={16} strokeWidth={2.5} /> }
+          { label: t('run.calcTime', 'Calculate Time'), value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
+          { label: t('run.calcPace', 'Calculate Pace'), value: 'pace', icon: <Footprints size={16} strokeWidth={2.5} /> }
         ]}
         active={mode}
         onChange={onModeChange}
         theme="green"
       />
 
-      <Label>Distanz</Label>
+      <Label>{t('run.distance')}</Label>
       <Card className="mb-5">
         <StepperInput
           value={data.distanceKm.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          unit="KM"
+          unit={t('units.km')}
           onIncrease={() => updateDist(0.01)}
           onDecrease={() => updateDist(-0.01)}
           onManualChange={handleDistManual}
         />
         <PresetGroup
           options={[
-            { label: 'Sprint', value: 5 },
-            { label: 'Olympisch', value: 10 },
-            { label: '70.3 (Halb)', value: 21.1 },
-            { label: '140.6 (Lang)', value: 42.2 },
+            { label: t('presets.sprint'), value: 5 },
+            { label: t('presets.olympic'), value: 10 },
+            { label: t('presets.half'), value: 21.1 },
+            { label: t('presets.full'), value: 42.2 },
           ]}
           activeValue={data.distanceKm}
           onSelect={handlePreset}
@@ -136,7 +140,7 @@ export const RunTab: React.FC<Props> = ({
 
       {mode === 'time' ? (
         <>
-          <Label>Pace (MIN/KM)</Label>
+          <Label>{t('run.paceLabel', 'Pace (MIN/KM)')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-4">
               <VerticalPicker
@@ -154,14 +158,14 @@ export const RunTab: React.FC<Props> = ({
               />
             </div>
             <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Min</span>
-              <span>Sek</span>
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>
       ) : (
         <>
-          <Label>Zielzeit</Label>
+          <Label>{t('run.targetTime', 'Target Time')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
@@ -186,9 +190,9 @@ export const RunTab: React.FC<Props> = ({
               />
             </div>
             <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Std</span>
-              <span>Min</span>
-              <span>Sek</span>
+              <span>{t('units.hours')}</span>
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>

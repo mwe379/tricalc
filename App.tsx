@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './i18n/config';
 import { BottomNav } from './components/BottomNav';
 import { SwimTab } from './features/SwimTab';
 import { BikeTab } from './features/BikeTab';

@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Flag, User, Calendar, ArrowRight } from 'lucide-react';
 import { WelcomeInput, GenderSelect } from '../components/MD3Components';
 import { UserProfile } from '../types';
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export const WelcomeScreen: React.FC<Props> = ({ onComplete }) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | null>(null);
@@ -32,33 +34,36 @@ export const WelcomeScreen: React.FC<Props> = ({ onComplete }) => {
         </div>
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-slate-900 mb-3">Willkommen! 👋</h1>
+          <h1 className="text-3xl font-black text-slate-900 mb-3">{t('welcome.title')} 👋</h1>
           <p className="text-slate-500 text-sm leading-relaxed px-4">
-            Bitte gib deine Daten ein, damit wir deine Ergebnisse korrekt mit der Altersklasse vergleichen können.
+            {t('welcome.intro')}
           </p>
         </div>
 
         <div className="space-y-2">
-          <WelcomeInput 
-            label="Dein Name" 
-            placeholder="z.B. Lukas" 
-            value={name} 
+          <WelcomeInput
+            label={t('welcome.nameLabel')}
+            placeholder={t('welcome.namePlaceholder')}
+            value={name}
             onChange={setName}
             icon={<User size={18} />}
           />
 
-          <WelcomeInput 
-            label="Geburtsdatum" 
-            placeholder="tt.mm.jjjj" 
+          <WelcomeInput
+            label={t('welcome.birthDateLabel')}
+            placeholder={t('welcome.birthDatePlaceholder')}
             type="date"
-            value={birthDate} 
+            value={birthDate}
             onChange={setBirthDate}
             icon={<Calendar size={18} />}
           />
 
-          <GenderSelect 
-            selected={gender} 
-            onChange={setGender} 
+          <GenderSelect
+            selected={gender}
+            onChange={setGender}
+            label={t('welcome.genderLabel')}
+            maleLabel={t('gender.male')}
+            femaleLabel={t('gender.female')}
           />
         </div>
       </div>
@@ -67,13 +72,12 @@ export const WelcomeScreen: React.FC<Props> = ({ onComplete }) => {
         <button
           onClick={handleSubmit}
           disabled={!isValid}
-          className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-            isValid 
-              ? 'bg-[#e2e8f0] text-slate-800 hover:bg-[#cbd5e1] shadow-sm translate-y-0' 
+          className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${isValid
+              ? 'bg-[#e2e8f0] text-slate-800 hover:bg-[#cbd5e1] shadow-sm translate-y-0'
               : 'bg-slate-50 text-slate-300 cursor-not-allowed'
-          }`}
+            }`}
         >
-          Los geht's <ArrowRight size={20} />
+          {t('welcome.button')} <ArrowRight size={20} />
         </button>
       </div>
     </div>

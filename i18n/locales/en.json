@@ -1,0 +1,104 @@
+{
+    "common": {
+        "save": "Save Changes",
+        "saved": "Saved",
+        "reset": "Reset",
+        "resetAll": "Reset All Times",
+        "calculate": "Calculate",
+        "settings": "Settings",
+        "profile": "Profile",
+        "proVersion": "Pro Version",
+        "version": "Version"
+    },
+    "nav": {
+        "swim": "Swim",
+        "bike": "Bike",
+        "run": "Run",
+        "total": "Total",
+        "settings": "Settings"
+    },
+    "settings": {
+        "title": "Settings",
+        "myProfile": "My Profile",
+        "displayName": "Display Name",
+        "birthDate": "Birth Date",
+        "gender": "Gender",
+        "proActive": "★ Pro Version Active",
+        "removeAds": "Remove Ads",
+        "restorePurchases": "Restore Purchases",
+        "language": "Language"
+    },
+    "gender": {
+        "male": "Male",
+        "female": "Female",
+        "diverse": "Diverse"
+    },
+    "welcome": {
+        "title": "Welcome to TriCalc",
+        "subtitle": "Your triathlon calculator",
+        "intro": "Please enter your details so we can correctly compare your results with your age group.",
+        "nameLabel": "Your Name",
+        "namePlaceholder": "e.g. Luke",
+        "birthDateLabel": "Birth Date",
+        "birthDatePlaceholder": "dd.mm.yyyy",
+        "genderLabel": "Gender",
+        "button": "Let's go"
+    },
+    "swim": {
+        "distance": "Distance",
+        "pace": "Pace",
+        "time": "Time",
+        "presets": "Presets",
+        "estimatedTime": "Estimated Swim Time",
+        "avgPace": "Ø PACE",
+        "calcTime": "Calculate Time",
+        "calcPace": "Calculate Pace",
+        "targetTime": "Target Time",
+        "paceLabel": "Pace (MIN/100M)"
+    },
+    "bike": {
+        "distance": "Distance",
+        "speed": "Speed",
+        "time": "Time",
+        "estimatedTime": "Estimated Bike Time",
+        "avgSpeed": "Ø SPEED",
+        "calcTime": "Calculate Time",
+        "calcSpeed": "Calculate Speed",
+        "avgSpeedLabel": "Average Speed",
+        "targetTime": "Target Time"
+    },
+    "run": {
+        "distance": "Distance",
+        "pace": "Pace",
+        "time": "Time",
+        "estimatedTime": "Estimated Run Time",
+        "avgPace": "Ø PACE",
+        "calcTime": "Calculate Time",
+        "calcPace": "Calculate Pace",
+        "paceLabel": "Pace (MIN/KM)",
+        "targetTime": "Target Time"
+    },
+    "total": {
+        "transitions": "Transitions",
+        "totalTime": "Total Time",
+        "targetTime": "TARGET TIME"
+    },
+    "presets": {
+        "sprint": "Sprint",
+        "olympic": "Olympic",
+        "half": "70.3 (Half)",
+        "full": "140.6 (Full)"
+    },
+    "units": {
+        "min": "Min",
+        "sec": "Sec",
+        "hours": "Hrs",
+        "km": "KM",
+        "kmh": "KM/H",
+        "dec": "DEC"
+    },
+    "actions": {
+        "addToTotal": "ADD TO TOTAL TIME",
+        "added": "ADDED"
+    }
+}

@@ -1,0 +1,104 @@
+{
+    "common": {
+        "save": "Änderungen speichern",
+        "saved": "Gespeichert",
+        "reset": "Zurücksetzen",
+        "resetAll": "Alle Zeiten zurücksetzen",
+        "calculate": "Berechnen",
+        "settings": "Einstellungen",
+        "profile": "Profil",
+        "proVersion": "Pro Version",
+        "version": "Version"
+    },
+    "nav": {
+        "swim": "Schwimmen",
+        "bike": "Rad",
+        "run": "Laufen",
+        "total": "Gesamt",
+        "settings": "Einstellungen"
+    },
+    "settings": {
+        "title": "Einstellungen",
+        "myProfile": "Mein Profil",
+        "displayName": "Anzeigename",
+        "birthDate": "Geburtsdatum",
+        "gender": "Geschlecht",
+        "proActive": "★ Pro Version Aktiviert",
+        "removeAds": "Werbung entfernen",
+        "restorePurchases": "Käufe wiederherstellen",
+        "language": "Sprache"
+    },
+    "gender": {
+        "male": "Männlich",
+        "female": "Weiblich",
+        "diverse": "Divers"
+    },
+    "welcome": {
+        "title": "Willkommen bei TriCalc",
+        "subtitle": "Dein Triathlon Rechner",
+        "intro": "Bitte gib deine Daten ein, damit wir deine Ergebnisse korrekt mit der Altersklasse vergleichen können.",
+        "nameLabel": "Dein Name",
+        "namePlaceholder": "z.B. Lukas",
+        "birthDateLabel": "Geburtsdatum",
+        "birthDatePlaceholder": "tt.mm.jjjj",
+        "genderLabel": "Geschlecht",
+        "button": "Los geht's"
+    },
+    "swim": {
+        "distance": "Distanz",
+        "pace": "Pace",
+        "time": "Zeit",
+        "presets": "Vorlagen",
+        "estimatedTime": "Geschätzte Schwimmzeit",
+        "avgPace": "Ø PACE",
+        "calcTime": "Zeit berechnen",
+        "calcPace": "Pace berechnen",
+        "targetTime": "Zielzeit",
+        "paceLabel": "Pace (MIN/100M)"
+    },
+    "bike": {
+        "distance": "Distanz",
+        "speed": "Geschwindigkeit",
+        "time": "Zeit",
+        "estimatedTime": "Geschätzte Radzeit",
+        "avgSpeed": "Ø GESCHWINDIGKEIT",
+        "calcTime": "Zeit berechnen",
+        "calcSpeed": "Tempo berechnen",
+        "avgSpeedLabel": "Durchschnittsgeschwindigkeit",
+        "targetTime": "Zielzeit"
+    },
+    "run": {
+        "distance": "Distanz",
+        "pace": "Pace",
+        "time": "Zeit",
+        "estimatedTime": "Geschätzte Laufzeit",
+        "avgPace": "Ø PACE",
+        "calcTime": "Zeit berechnen",
+        "calcPace": "Pace berechnen",
+        "paceLabel": "Pace (MIN/KM)",
+        "targetTime": "Zielzeit"
+    },
+    "total": {
+        "transitions": "Wechselzeiten",
+        "totalTime": "Gesamtzeit",
+        "targetTime": "ZIELZEIT"
+    },
+    "presets": {
+        "sprint": "Sprint",
+        "olympic": "Olympisch",
+        "half": "70.3 (Halb)",
+        "full": "140.6 (Lang)"
+    },
+    "units": {
+        "min": "Min",
+        "sec": "Sek",
+        "hours": "Std",
+        "km": "KM",
+        "kmh": "KM/H",
+        "dec": "DEZ"
+    },
+    "actions": {
+        "addToTotal": "ZUR GESAMTZEIT HINZUFÜGEN",
+        "added": "HINZUGEFÜGT"
+    }
+}

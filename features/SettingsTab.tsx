@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../types';
 import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
-import { ArrowLeft, User, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Calendar, Globe } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
 import 'cordova-plugin-purchase';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   userProfile: UserProfile;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onClose, onPurchase, onRestore, product, storeAvailable }) => {
+  const { t, i18n } = useTranslation();
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
@@ -42,6 +44,10 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
     return "0,99 €";
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
       {/* White Header - Updated top padding to pt-14 for safe area */}
@@ -53,24 +59,50 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
           >
             <ArrowLeft size={24} />
           </button>
-          <h1 className="text-xl font-bold text-slate-900">Einstellungen</h1>
+          <h1 className="text-xl font-bold text-slate-900">{t('settings.title')}</h1>
         </div>
       </div>
 
       <div className="p-4 space-y-6">
 
         <div>
-          <Label>Mein Profil ({ageGroup})</Label>
+          <Label>{t('settings.language')}</Label>
+          <Card>
+            <div className="flex gap-3">
+              <button
+                onClick={() => changeLanguage('en')}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${i18n.resolvedLanguage === 'en'
+                  ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+                  : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+                  }`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => changeLanguage('de')}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${i18n.resolvedLanguage === 'de'
+                  ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+                  : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+                  }`}
+              >
+                Deutsch
+              </button>
+            </div>
+          </Card>
+        </div>
+
+        <div>
+          <Label>{t('settings.myProfile')} ({ageGroup})</Label>
           <Card>
             <WelcomeInput
-              label="Anzeigename"
+              label={t('settings.displayName')}
               placeholder="Dein Name"
               value={name}
               onChange={setName}
               icon={<User size={18} />}
             />
             <WelcomeInput
-              label="Geburtsdatum"
+              label={t('settings.birthDate')}
               placeholder="tt.mm.jjjj"
               type="date"
               value={birthDate}
@@ -80,23 +112,26 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
             <GenderSelect
               selected={gender}
               onChange={setGender}
+              label={t('settings.gender')}
+              maleLabel={t('gender.male')}
+              femaleLabel={t('gender.female')}
             />
 
             <button
               onClick={handleSave}
               className="w-full bg-[#0f172a] text-white font-bold py-3 rounded-xl mt-2 hover:bg-slate-800 transition-colors active:scale-95"
             >
-              Änderungen speichern
+              {t('common.save')}
             </button>
           </Card>
         </div>
 
         <div>
-          <Label>Pro Version</Label>
+          <Label>{t('settings.proVersion')}</Label>
           <Card>
             {userProfile.isPro ? (
               <div className="flex items-center justify-center gap-2 py-4 text-emerald-600 font-bold">
-                <span>★ Pro Version Aktiviert</span>
+                <span>{t('settings.proActive')}</span>
               </div>
             ) : (
               <div className="space-y-3">
@@ -104,13 +139,13 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
                   onClick={onPurchase}
                   className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95"
                 >
-                  Werbung entfernen ({getPriceText()})
+                  {t('settings.removeAds')} ({getPriceText()})
                 </button>
                 <button
                   onClick={onRestore}
                   className="w-full text-slate-500 text-sm font-medium py-2 hover:text-slate-800 transition-colors"
                 >
-                  Käufe wiederherstellen
+                  {t('settings.restorePurchases')}
                 </button>
               </div>
             )}

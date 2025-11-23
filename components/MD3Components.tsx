@@ -160,13 +160,15 @@ export const TimeDisplayCard = ({
   time,
   textColor = 'text-[#005596]',
   onAdd,
-  subLabel = "ZUR GESAMTZEIT HINZUFÜGEN"
+  subLabel = "ZUR GESAMTZEIT HINZUFÜGEN",
+  addedLabel = "HINZUGEFÜGT"
 }: {
   label: string;
   time: string;
   textColor?: string;
   onAdd?: () => void;
   subLabel?: string;
+  addedLabel?: string;
 }) => {
   const [isAdded, setIsAdded] = useState(false);
 
@@ -205,7 +207,7 @@ export const TimeDisplayCard = ({
         {onAdd && (
           <div className="flex justify-end mt-2">
             <span className={`text-[9px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600' : 'text-[#4c4aec]/80'}`}>
-              {isAdded ? "HINZUGEFÜGT" : subLabel}
+              {isAdded ? addedLabel : subLabel}
             </span>
           </div>
         )}
@@ -461,33 +463,39 @@ export const WelcomeInput = ({
 
 export const GenderSelect = ({
   selected,
-  onChange
+  onChange,
+  label = "Geschlecht",
+  maleLabel = "Männlich",
+  femaleLabel = "Weiblich"
 }: {
   selected: 'male' | 'female' | null;
-  onChange: (val: 'male' | 'female') => void
+  onChange: (val: 'male' | 'female') => void;
+  label?: string;
+  maleLabel?: string;
+  femaleLabel?: string;
 }) => (
   <div className="mb-8">
     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
-      Geschlecht
+      {label}
     </label>
     <div className="flex gap-3">
       <button
         onClick={() => onChange('male')}
         className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'male'
-            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+          ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+          : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
           }`}
       >
-        Männlich
+        {maleLabel}
       </button>
       <button
         onClick={() => onChange('female')}
         className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'female'
-            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+          ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
+          : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
           }`}
       >
-        Weiblich
+        {femaleLabel}
       </button>
     </div>
   </div>
