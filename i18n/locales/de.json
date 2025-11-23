@@ -24,8 +24,13 @@
         "birthDate": "Geburtsdatum",
         "gender": "Geschlecht",
         "proActive": "★ Pro Version Aktiviert",
+        "proVersion": "Pro Version",
         "removeAds": "Werbung entfernen",
         "restorePurchases": "Käufe wiederherstellen",
+        "theme": "Design",
+        "themeLight": "Hell",
+        "themeDark": "Dunkel",
+        "themeSystem": "System",
         "language": "Sprache"
     },
     "gender": {

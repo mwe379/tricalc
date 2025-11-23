@@ -102,7 +102,7 @@ export const DisciplineLayout = ({
           </div>
         )}
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight">{title}</h1>
           <button
             onClick={onSettingsClick}
             className="opacity-60 hover:opacity-100 transition-opacity p-2 -mr-2"
