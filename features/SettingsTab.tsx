@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { UserProfile } from '../types';
-import { WelcomeInput, GenderSelect, Card, Label } from '../components/MD3Components';
+import { UserProfile, Theme } from '../types';
+import { WelcomeInput, GenderSelect, Card, Label, ThemeSelect } from '../components/MD3Components';
 import { ArrowLeft, User, Calendar, Globe } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
 import 'cordova-plugin-purchase';
@@ -21,6 +21,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
   const [name, setName] = useState(userProfile.name);
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
+  const [theme, setTheme] = useState<Theme>(userProfile.theme || 'system');
 
   const ageGroup = calculateAgeGroup(birthDate);
 
@@ -29,7 +30,8 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
       name,
       birthDate,
       gender,
-      isPro: userProfile.isPro
+      isPro: userProfile.isPro,
+      theme
     });
     onClose();
   };
@@ -49,17 +51,17 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
+    <div className="min-h-screen bg-[#f3f5f7] dark:bg-slate-950 pb-32 max-w-md mx-auto w-full transition-colors duration-300">
       {/* White Header - Updated top padding to pt-14 for safe area */}
-      <div className="bg-white pt-14 pb-4 px-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] sticky top-0 z-20">
+      <div className="bg-white dark:bg-slate-900 pt-14 pb-4 px-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] sticky top-0 z-20 transition-colors duration-300">
         <div className="flex items-center gap-4">
           <button
             onClick={onClose}
-            className="p-2 -ml-2 text-slate-500 hover:text-slate-800 transition-colors"
+            className="p-2 -ml-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
           >
             <ArrowLeft size={24} />
           </button>
-          <h1 className="text-xl font-bold text-slate-900">{t('settings.title')}</h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('settings.title')}</h1>
         </div>
       </div>
 
@@ -72,8 +74,8 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
               <button
                 onClick={() => changeLanguage('en')}
                 className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${i18n.resolvedLanguage === 'en'
-                  ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-                  : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+                  ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+                  : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
                   }`}
               >
                 English
@@ -81,13 +83,27 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
               <button
                 onClick={() => changeLanguage('de')}
                 className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${i18n.resolvedLanguage === 'de'
-                  ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-                  : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+                  ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+                  : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
                   }`}
               >
                 Deutsch
               </button>
             </div>
+          </Card>
+        </div>
+
+        <div>
+          <Label>{t('settings.theme') || "Design"}</Label>
+          <Card>
+            <ThemeSelect
+              selected={theme}
+              onChange={setTheme}
+              label=""
+              lightLabel={t('settings.themeLight') || "Hell"}
+              darkLabel={t('settings.themeDark') || "Dunkel"}
+              systemLabel={t('settings.themeSystem') || "System"}
+            />
           </Card>
         </div>
 
@@ -119,7 +135,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
 
             <button
               onClick={handleSave}
-              className="w-full bg-[#0f172a] text-white font-bold py-3 rounded-xl mt-2 hover:bg-slate-800 transition-colors active:scale-95"
+              className="w-full bg-[#0f172a] dark:bg-slate-700 text-white font-bold py-3 rounded-xl mt-2 hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors active:scale-95"
             >
               {t('common.save')}
             </button>
@@ -130,7 +146,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
           <Label>{t('settings.proVersion')}</Label>
           <Card>
             {userProfile.isPro ? (
-              <div className="flex items-center justify-center gap-2 py-4 text-emerald-600 font-bold">
+              <div className="flex items-center justify-center gap-2 py-4 text-emerald-600 dark:text-emerald-400 font-bold">
                 <span>{t('settings.proActive')}</span>
               </div>
             ) : (
@@ -143,7 +159,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
                 </button>
                 <button
                   onClick={onRestore}
-                  className="w-full text-slate-500 text-sm font-medium py-2 hover:text-slate-800 transition-colors"
+                  className="w-full text-slate-500 dark:text-slate-400 text-sm font-medium py-2 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
                 >
                   {t('settings.restorePurchases')}
                 </button>
@@ -153,7 +169,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
         </div>
 
         <div className="text-center pt-4 pb-8">
-          <p className="text-[10px] text-slate-400">
+          <p className="text-[10px] text-slate-400 dark:text-slate-600">
             TriCalc v1.2.1
           </p>
         </div>

@@ -24,15 +24,15 @@ interface Props {
 }
 
 // Simple row for Swim, Bike, Run
-const ActivityRow: React.FC<{ icon: React.ReactNode, label: string, time: string, colorClass: string, bgClass: string }> = ({ icon, label, time, colorClass, bgClass }) => (
+const ActivityRow: React.FC<{ icon: React.ReactNode, label: string, time: string, colorClass: string, bgClass: string, darkBgClass: string, darkColorClass: string }> = ({ icon, label, time, colorClass, bgClass, darkBgClass, darkColorClass }) => (
     <div className="flex items-center justify-between py-5 px-1">
         <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl ${bgClass} flex items-center justify-center`}>
-                {React.cloneElement(icon as React.ReactElement<any>, { size: 24, className: colorClass })}
+            <div className={`w-12 h-12 rounded-2xl ${bgClass} ${darkBgClass} flex items-center justify-center`}>
+                {React.cloneElement(icon as React.ReactElement<any>, { size: 24, className: `${colorClass} ${darkColorClass}` })}
             </div>
-            <span className="text-slate-900 font-bold text-base">{label}</span>
+            <span className="text-slate-900 dark:text-white font-bold text-base">{label}</span>
         </div>
-        <span className="text-slate-300 font-mono font-medium text-lg tracking-widest">
+        <span className="text-slate-300 dark:text-slate-600 font-mono font-medium text-lg tracking-widest">
             {time === "0:00:00" ? "- - : - - : - -" : time}
         </span>
     </div>
@@ -75,7 +75,7 @@ const TransitionRow: React.FC<{
         <div className="py-2">
             <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-6 pl-2">
-                    <div className="w-10 h-8 rounded border border-slate-200 flex items-center justify-center text-[11px] font-bold text-slate-400 uppercase">
+                    <div className="w-10 h-8 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase">
                         {label}
                     </div>
                 </div>
@@ -86,7 +86,7 @@ const TransitionRow: React.FC<{
                     className={`w-32 h-10 rounded-xl border font-mono text-sm font-medium flex items-center justify-center transition-colors
                         ${isOpen
                             ? 'border-[#4c4aec] bg-[#4c4aec] text-white shadow-md'
-                            : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'}
+                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}
                     `}
                 >
                     {formattedTime}
@@ -94,7 +94,7 @@ const TransitionRow: React.FC<{
             </div>
 
             {isOpen && (
-                <div className="mt-4 mb-2 bg-slate-50 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+                <div className="mt-4 mb-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
                     <div className="flex items-center justify-center gap-4 mb-6">
                         <VerticalPicker
                             value={formatSingleDigit(minutes)}
@@ -103,7 +103,7 @@ const TransitionRow: React.FC<{
                             onDecrease={() => update(minutes - 1, seconds)}
                             onManualChange={(v) => update(parseInt(v) || 0, seconds)}
                         />
-                        <span className="text-xl font-bold text-slate-300">:</span>
+                        <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
                         <VerticalPicker
                             value={formatSingleDigit(seconds)}
                             label={secLabel}
@@ -118,7 +118,7 @@ const TransitionRow: React.FC<{
                             <button
                                 key={preset.label}
                                 onClick={() => onUpdate(preset.min, preset.sec)}
-                                className="px-3 py-2 bg-white rounded-lg border border-slate-200 text-[10px] font-bold text-slate-500 hover:border-[#4c4aec] hover:text-[#4c4aec] transition-all active:scale-95 shadow-sm"
+                                className="px-3 py-2 bg-white dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 text-[10px] font-bold text-slate-500 dark:text-slate-300 hover:border-[#4c4aec] hover:text-[#4c4aec] dark:hover:text-white transition-all active:scale-95 shadow-sm"
                             >
                                 {preset.label}
                             </button>
@@ -166,9 +166,9 @@ export const TotalTab: React.FC<Props> = ({
         >
 
             {/* Target Time Card */}
-            <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] border border-slate-50 text-center mb-6 flex flex-col items-center">
-                <h3 className="text-[11px] font-bold text-[#4c4aec] uppercase tracking-widest mb-2 opacity-80">{t('total.targetTime', 'TARGET TIME')}</h3>
-                <div className="text-6xl font-black text-[#1e1b4b] tracking-tighter mb-4">
+            <div className="bg-white dark:bg-slate-900 rounded-[32px] p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] border border-slate-50 dark:border-slate-800 text-center mb-6 flex flex-col items-center transition-colors duration-300">
+                <h3 className="text-[11px] font-bold text-[#4c4aec] dark:text-indigo-400 uppercase tracking-widest mb-2 opacity-80">{t('total.targetTime', 'TARGET TIME')}</h3>
+                <div className="text-6xl font-black text-[#1e1b4b] dark:text-white tracking-tighter mb-4">
                     {formatTime(totalSeconds)}
                 </div>
 
@@ -185,9 +185,11 @@ export const TotalTab: React.FC<Props> = ({
                         label={t('nav.swim')}
                         time={formatTime(swimSeconds)}
                         bgClass="bg-blue-50"
+                        darkBgClass="dark:bg-blue-900/20"
                         colorClass="text-blue-600"
+                        darkColorClass="dark:text-blue-400"
                     />
-                    <div className="h-px bg-slate-100 w-full" />
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
 
                     <TransitionRow
                         label="T1"
@@ -200,17 +202,19 @@ export const TotalTab: React.FC<Props> = ({
                         secLabel={t('units.sec')}
                     />
 
-                    <div className="h-px bg-slate-100 w-full" />
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
 
                     <ActivityRow
                         icon={<Bike />}
                         label={t('nav.bike')}
                         time={formatTime(bikeSeconds)}
                         bgClass="bg-orange-50"
+                        darkBgClass="dark:bg-orange-900/20"
                         colorClass="text-orange-600"
+                        darkColorClass="dark:text-orange-400"
                     />
 
-                    <div className="h-px bg-slate-100 w-full" />
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
 
                     <TransitionRow
                         label="T2"
@@ -223,16 +227,18 @@ export const TotalTab: React.FC<Props> = ({
                         secLabel={t('units.sec')}
                     />
 
-                    <div className="h-px bg-slate-100 w-full" />
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-full" />
 
                     <ActivityRow
                         icon={<Footprints />}
                         label={t('nav.run')}
                         time={formatTime(runSeconds)}
                         bgClass="bg-emerald-50"
+                        darkBgClass="dark:bg-emerald-900/20"
                         colorClass="text-emerald-600"
+                        darkColorClass="dark:text-emerald-400"
                     />
-                    <div className="h-px bg-slate-100 w-full mb-4 border-dashed" />
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-full mb-4 border-dashed" />
                 </div>
 
                 <ResetButton label={t('common.resetAll', 'Reset All Times')} onClick={onReset} />

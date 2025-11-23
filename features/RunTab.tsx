@@ -149,7 +149,7 @@ export const RunTab: React.FC<Props> = ({
                 onDecrease={() => updatePace(data.paceMinPerKm - 1, data.paceSecPerKm)}
                 onManualChange={(v) => updatePace(parseInt(v) || 0, data.paceSecPerKm)}
               />
-              <span className="text-2xl font-bold text-slate-300">:</span>
+              <span className="text-2xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(data.paceSecPerKm)}
                 onIncrease={() => updatePace(data.paceMinPerKm, data.paceSecPerKm + 1)}
@@ -157,7 +157,7 @@ export const RunTab: React.FC<Props> = ({
                 onManualChange={(v) => updatePace(data.paceMinPerKm, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               <span>{t('units.min')}</span>
               <span>{t('units.sec')}</span>
             </div>
@@ -174,14 +174,14 @@ export const RunTab: React.FC<Props> = ({
                 onDecrease={() => updateTime(hours - 1, minutes, seconds)}
                 onManualChange={(v) => updateTime(parseInt(v) || 0, minutes, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(minutes)}
                 onIncrease={() => updateTime(hours, minutes + 1, seconds)}
                 onDecrease={() => updateTime(hours, minutes - 1, seconds)}
                 onManualChange={(v) => updateTime(hours, parseInt(v) || 0, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(seconds)}
                 onIncrease={() => updateTime(hours, minutes, seconds + 1)}
@@ -189,7 +189,7 @@ export const RunTab: React.FC<Props> = ({
                 onManualChange={(v) => updateTime(hours, minutes, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               <span>{t('units.hours')}</span>
               <span>{t('units.min')}</span>
               <span>{t('units.sec')}</span>
