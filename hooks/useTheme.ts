@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Theme } from '../types';
 
-export const useTheme = (theme: Theme) => {
+export const useTheme = (theme: Theme, deps: any[] = []) => {
     useEffect(() => {
         const root = window.document.documentElement;
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -28,5 +28,5 @@ export const useTheme = (theme: Theme) => {
             systemTheme.addEventListener('change', applyTheme);
             return () => systemTheme.removeEventListener('change', applyTheme);
         }
-    }, [theme]);
+    }, [theme, ...deps]);
 };
