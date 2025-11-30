@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BikeState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
@@ -25,6 +26,7 @@ export const BikeTab: React.FC<Props> = ({
   data, onChange, mode, onModeChange, onPresetChange, onSave,
   headerSubtitle, onOpenSettings, userProfile
 }) => {
+  const { t } = useTranslation();
 
   // Target Time State
   const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 40, 0);
@@ -34,7 +36,7 @@ export const BikeTab: React.FC<Props> = ({
       const secs = calculateBikeTime(data.distanceKm, data.speedKmh);
       return {
         displayMain: formatTime(secs),
-        displayLabel: 'Geschätzte Radzeit',
+        displayLabel: t('bike.estimatedTime', 'Estimated Bike Time'),
         secondsForTotal: secs
       };
     } else {
@@ -48,7 +50,7 @@ export const BikeTab: React.FC<Props> = ({
 
       return {
         displayMain: `${speed.toFixed(1)} km/h`,
-        displayLabel: 'Ø GESCHWINDIGKEIT',
+        displayLabel: t('bike.avgSpeed', 'Ø SPEED'),
         secondsForTotal: totalSeconds
       };
     }
@@ -92,7 +94,7 @@ export const BikeTab: React.FC<Props> = ({
   return (
     <DisciplineLayout
       theme="orange"
-      title="Radfahren"
+      title={t('nav.bike')}
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
       hasTopAd={!userProfile?.isPro}
@@ -101,35 +103,37 @@ export const BikeTab: React.FC<Props> = ({
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
-        textColor="text-[#c2410c]"
+        textColor="text-orange-700"
         onAdd={() => onSave(secondsForTotal)}
+        subLabel={t('actions.addToTotal')}
+        addedLabel={t('actions.added')}
       />
 
       <Toggle
         options={[
-          { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
-          { label: 'Tempo berechnen', value: 'pace', icon: <RotateCw size={16} strokeWidth={2.5} /> }
+          { label: t('bike.calcTime', 'Calculate Time'), value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
+          { label: t('bike.calcSpeed', 'Calculate Speed'), value: 'pace', icon: <RotateCw size={16} strokeWidth={2.5} /> }
         ]}
         active={mode}
         onChange={onModeChange}
         theme="orange"
       />
 
-      <Label>Distanz</Label>
+      <Label>{t('bike.distance')}</Label>
       <Card className="mb-5">
         <StepperInput
           value={data.distanceKm.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
-          unit="KM"
+          unit={t('units.km')}
           onIncrease={() => updateDist(0.1)}
           onDecrease={() => updateDist(-0.1)}
           onManualChange={handleDistManual}
         />
         <PresetGroup
           options={[
-            { label: 'Sprint', value: 20 },
-            { label: 'Olympisch', value: 40 },
-            { label: '70.3 (Halb)', value: 90 },
-            { label: '140.6 (Lang)', value: 180 },
+            { label: t('presets.sprint'), value: 20 },
+            { label: t('presets.olympic'), value: 40 },
+            { label: t('presets.half'), value: 90 },
+            { label: t('presets.full'), value: 180 },
           ]}
           activeValue={data.distanceKm}
           onSelect={handlePreset}
@@ -139,7 +143,7 @@ export const BikeTab: React.FC<Props> = ({
 
       {mode === 'time' ? (
         <>
-          <Label>Durchschnittsgeschwindigkeit</Label>
+          <Label>{t('bike.avgSpeedLabel', 'Average Speed')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-4">
               <VerticalPicker
@@ -148,7 +152,7 @@ export const BikeTab: React.FC<Props> = ({
                 onDecrease={() => updateSpeed(speedInt - 1, speedDec)}
                 onManualChange={(v) => updateSpeed(parseInt(v) || 0, speedDec)}
               />
-              <span className="text-2xl font-bold text-slate-300">,</span>
+              <span className="text-2xl font-bold text-slate-300 dark:text-slate-600">,</span>
               <VerticalPicker
                 value={speedDec.toString()}
                 onIncrease={() => updateSpeed(speedInt, speedDec + 1)}
@@ -156,15 +160,15 @@ export const BikeTab: React.FC<Props> = ({
                 onManualChange={(v) => updateSpeed(speedInt, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>KM/H</span>
-              <span>DEZ</span>
+            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <span>{t('units.kmh', 'KM/H')}</span>
+              <span>{t('units.dec', 'DEC')}</span>
             </div>
           </Card>
         </>
       ) : (
         <>
-          <Label>Zielzeit</Label>
+          <Label>{t('bike.targetTime', 'Target Time')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
@@ -173,14 +177,14 @@ export const BikeTab: React.FC<Props> = ({
                 onDecrease={() => updateTime(hours - 1, minutes, seconds)}
                 onManualChange={(v) => updateTime(parseInt(v) || 0, minutes, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(minutes)}
                 onIncrease={() => updateTime(hours, minutes + 1, seconds)}
                 onDecrease={() => updateTime(hours, minutes - 1, seconds)}
                 onManualChange={(v) => updateTime(hours, parseInt(v) || 0, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(seconds)}
                 onIncrease={() => updateTime(hours, minutes, seconds + 1)}
@@ -188,10 +192,10 @@ export const BikeTab: React.FC<Props> = ({
                 onManualChange={(v) => updateTime(hours, minutes, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Std</span>
-              <span>Min</span>
-              <span>Sek</span>
+            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <span>{t('units.hours')}</span>
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>

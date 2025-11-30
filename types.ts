@@ -28,11 +28,14 @@ export interface TransitionState {
   t2Seconds: number;
 }
 
+export type Theme = 'light' | 'dark' | 'system';
+
 export interface UserProfile {
   name: string;
   birthDate: string; // YYYY-MM-DD
   gender: 'male' | 'female';
   isPro?: boolean;
+  theme: Theme;
 }
 
 export enum Tab {

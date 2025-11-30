@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './i18n/config';
 import { BottomNav } from './components/BottomNav';
 import { SwimTab } from './features/SwimTab';
 import { BikeTab } from './features/BikeTab';
@@ -10,6 +11,7 @@ import { Tab, SwimState, BikeState, RunState, TransitionState, UserProfile } fro
 import { calculateAgeGroup } from './utils';
 
 import { useIAP } from './hooks/useIAP';
+import { useTheme } from './hooks/useTheme';
 import { profile } from 'console';
 
 const App: React.FC = () => {
@@ -19,6 +21,9 @@ const App: React.FC = () => {
   // -- User Profile / Onboarding --
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+
+  // -- Theme Hook --
+  useTheme(userProfile?.theme || 'system', [activeTab]);
 
   // -- IAP Hook --
   const { isPro, purchase, restore, product, storeAvailable } = useIAP();
@@ -238,7 +243,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f5f7] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900 relative max-w-md mx-auto shadow-2xl border-x border-slate-200/50">
+    <div className="min-h-screen bg-[#f3f5f7] dark:bg-slate-950 text-slate-900 dark:text-white font-sans selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 relative max-w-md mx-auto shadow-2xl border-x border-slate-200/50 dark:border-slate-800 transition-colors duration-300">
       <main className="h-full w-full overflow-y-auto scroll-smooth no-scrollbar">
         {renderContent()}
       </main>

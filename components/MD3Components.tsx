@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronUp, ChevronDown, Plus, Minus, Settings, Trash2, Check, X, Trophy } from 'lucide-react';
 
 // -- Types --
@@ -24,19 +25,19 @@ const InputStyles = () => (
 const getThemeStyles = (isActive: boolean, theme: ThemeColor) => {
   if (isActive) {
     switch (theme) {
-      case 'orange': return 'bg-[#ea580c] text-white shadow-md';
-      case 'green': return 'bg-[#059669] text-white shadow-md';
-      case 'purple': return 'bg-[#7c3aed] text-white shadow-md';
+      case 'orange': return 'bg-[#ea580c] text-white shadow-md dark:bg-orange-600';
+      case 'green': return 'bg-[#059669] text-white shadow-md dark:bg-emerald-600';
+      case 'purple': return 'bg-[#7c3aed] text-white shadow-md dark:bg-violet-600';
       case 'blue':
-      default: return 'bg-[#2563eb] text-white shadow-md';
+      default: return 'bg-[#2563eb] text-white shadow-md dark:bg-blue-600';
     }
   } else {
     switch (theme) {
-      case 'orange': return 'bg-[#ffedd5] text-[#9a3412] hover:bg-[#fed7aa]';
-      case 'green': return 'bg-[#d1fae5] text-[#065f46] hover:bg-[#a7f3d0]';
-      case 'purple': return 'bg-[#ede9fe] text-[#5b21b6] hover:bg-[#ddd6fe]';
+      case 'orange': return 'bg-[#ffedd5] text-[#9a3412] hover:bg-[#fed7aa] dark:bg-orange-900/30 dark:text-orange-200 dark:hover:bg-orange-900/50';
+      case 'green': return 'bg-[#d1fae5] text-[#065f46] hover:bg-[#a7f3d0] dark:bg-emerald-900/30 dark:text-emerald-200 dark:hover:bg-emerald-900/50';
+      case 'purple': return 'bg-[#ede9fe] text-[#5b21b6] hover:bg-[#ddd6fe] dark:bg-violet-900/30 dark:text-violet-200 dark:hover:bg-violet-900/50';
       case 'blue':
-      default: return 'bg-[#dbeafe] text-[#1e40af] hover:bg-[#bfdbfe]';
+      default: return 'bg-[#dbeafe] text-[#1e40af] hover:bg-[#bfdbfe] dark:bg-blue-900/30 dark:text-blue-200 dark:hover:bg-blue-900/50';
     }
   }
 };
@@ -67,30 +68,41 @@ export const DisciplineLayout = ({
 }) => {
   const getThemeColors = () => {
     switch (theme) {
-      case 'orange': return 'bg-orange-50 text-orange-900';
-      case 'green': return 'bg-emerald-50 text-emerald-900';
-      case 'purple': return 'bg-indigo-50 text-indigo-900';
+      case 'orange': return 'bg-orange-50 text-orange-900 dark:bg-orange-950 dark:text-orange-100';
+      case 'green': return 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100';
+      case 'purple': return 'bg-indigo-50 text-indigo-900 dark:bg-indigo-950 dark:text-indigo-100';
       case 'blue':
-      default: return 'bg-blue-50 text-blue-900';
+      default: return 'bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-100';
     }
   }
 
-  // Wenn Ad aktiv ist, nutzen wir pt-40 (ca. 160px), sonst pt-24 (ca. 96px)
-  // Das schafft Platz für den nativen Banner oben.
-  const topPadding = hasTopAd ? 'pt-40' : 'pt-24';
+  // Dynamic padding to account for Status Bar + Ad + Visual Spacing
+  // Base spacing: 72px (approx pt-18/pt-20)
+  // Ad height: 64px (approx pt-16)
+  const baseSpacing = '64px';
+  const adHeight = '64px';
+
+  const paddingTopStyle = {
+    paddingTop: hasTopAd
+      ? `calc(env(safe-area-inset-top) + ${baseSpacing} + ${adHeight})`
+      : `calc(env(safe-area-inset-top) + ${baseSpacing})`
+  };
 
   return (
-    <div className="min-h-screen bg-[#f3f5f7] pb-32 max-w-md mx-auto w-full">
+    <div className="min-h-screen bg-[#f3f5f7] dark:bg-slate-950 pb-32 max-w-md mx-auto w-full transition-colors duration-300">
       <InputStyles />
       {/* Header Section */}
-      <div className={`${topPadding} pb-6 px-6 shadow-sm ${getThemeColors()}`}>
+      <div
+        className={`pb-6 px-6 shadow-sm transition-colors duration-300 ${getThemeColors()}`}
+        style={paddingTopStyle}
+      >
         {subtitle && (
           <div className="text-[10px] font-bold opacity-60 tracking-widest uppercase mb-1">
             {subtitle}
           </div>
         )}
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight">{title}</h1>
           <button
             onClick={onSettingsClick}
             className="opacity-60 hover:opacity-100 transition-opacity p-2 -mr-2"
@@ -112,28 +124,28 @@ export const Header = ({ title, subtitle }: { title: string; subtitle?: string }
   <div className="mb-6 mt-2">
     <div className="flex justify-between items-start mb-1">
       {subtitle && (
-        <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase">
           {subtitle}
         </span>
       )}
-      <button className="text-slate-300 hover:text-slate-500">
+      <button className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400">
         <Settings size={20} />
       </button>
     </div>
-    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{title}</h1>
+    <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{title}</h1>
   </div>
 );
 
 // -- Card --
 export const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 ${className}`}>
+  <div className={`bg-white dark:bg-slate-900 rounded-[24px] p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 dark:border-slate-800 transition-colors duration-300 ${className}`}>
     {children}
   </div>
 );
 
 // -- Label --
 export const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={`text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 ${className}`}>
+  <h3 className={`text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1 ${className}`}>
     {children}
   </h3>
 );
@@ -146,10 +158,11 @@ export const PerformanceBadge = ({
   percentile: number;
   akLabel: string;
 }) => {
+  const { t } = useTranslation();
   return (
-    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f3e8ff] rounded-full text-[#7e22ce] text-xs font-bold mb-2 shadow-sm border border-[#e9d5ff] animate-in zoom-in-95">
+    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f3e8ff] dark:bg-purple-900/30 rounded-full text-[#7e22ce] dark:text-purple-200 text-xs font-bold mb-2 shadow-sm border border-[#e9d5ff] dark:border-purple-800 animate-in zoom-in-95">
       <Trophy size={14} fill="currentColor" className="text-[#a855f7]" />
-      <span>Schneller als {percentile}% der AK ({akLabel})</span>
+      <span>{t('total.fasterThan', { percentile, akLabel })}</span>
     </div>
   );
 };
@@ -160,13 +173,15 @@ export const TimeDisplayCard = ({
   time,
   textColor = 'text-[#005596]',
   onAdd,
-  subLabel = "ZUR GESAMTZEIT HINZUFÜGEN"
+  subLabel = "ZUR GESAMTZEIT HINZUFÜGEN",
+  addedLabel = "HINZUGEFÜGT"
 }: {
   label: string;
   time: string;
   textColor?: string;
   onAdd?: () => void;
   subLabel?: string;
+  addedLabel?: string;
 }) => {
   const [isAdded, setIsAdded] = useState(false);
 
@@ -179,13 +194,13 @@ export const TimeDisplayCard = ({
   };
 
   return (
-    <div className="bg-white rounded-[28px] p-5 pb-5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] border border-slate-50 relative mb-5 transition-all">
+    <div className="bg-white dark:bg-slate-900 rounded-[28px] p-5 pb-5 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] border border-slate-50 dark:border-slate-800 relative mb-5 transition-all">
 
       <div className="flex flex-col">
         <Label className="mb-1 opacity-60 text-left">{label}</Label>
 
         <div className="flex items-center justify-between">
-          <span className={`text-6xl font-black tracking-tighter ${textColor}`}>
+          <span className={`text-6xl font-black tracking-tighter ${textColor} dark:text-white`}>
             {time}
           </span>
 
@@ -204,8 +219,8 @@ export const TimeDisplayCard = ({
 
         {onAdd && (
           <div className="flex justify-end mt-2">
-            <span className={`text-[9px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600' : 'text-[#4c4aec]/80'}`}>
-              {isAdded ? "HINZUGEFÜGT" : subLabel}
+            <span className={`text-[9px] font-bold uppercase tracking-wide transition-colors duration-300 ${isAdded ? 'text-green-600 dark:text-green-400' : 'text-[#4c4aec]/80 dark:text-indigo-400'}`}>
+              {isAdded ? addedLabel : subLabel}
             </span>
           </div>
         )}
@@ -291,10 +306,10 @@ export const StepperInput = ({
   };
 
   return (
-    <div className="bg-[#f8fafc] rounded-[20px] p-3 flex items-center justify-between border border-slate-100 mb-3">
+    <div className="bg-[#f8fafc] dark:bg-slate-800 rounded-[20px] p-3 flex items-center justify-between border border-slate-100 dark:border-slate-700 mb-3 transition-colors">
       <button
         onClick={onDecrease}
-        className="w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+        className="w-11 h-11 flex items-center justify-center bg-white dark:bg-slate-700 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white active:scale-95 transition-all flex-shrink-0"
       >
         <Minus size={20} />
       </button>
@@ -308,14 +323,14 @@ export const StepperInput = ({
           onChange={(e) => setLocalValue(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className="w-full text-3xl font-black text-slate-900 tracking-tight text-center bg-transparent border-none outline-none p-0"
+          className="w-full text-3xl font-black text-slate-900 dark:text-white tracking-tight text-center bg-transparent border-none outline-none p-0"
         />
-        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{unit}</div>
+        <div className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">{unit}</div>
       </div>
 
       <button
         onClick={onIncrease}
-        className="w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-sm border border-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all flex-shrink-0"
+        className="w-11 h-11 flex items-center justify-center bg-white dark:bg-slate-700 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white active:scale-95 transition-all flex-shrink-0"
       >
         <Plus size={20} />
       </button>
@@ -399,9 +414,9 @@ export const VerticalPicker = ({
 
   return (
     <div className="flex flex-col items-center w-20">
-      <button onClick={onIncrease} className="text-slate-300 hover:text-slate-500 p-1 transition-colors"><ChevronUp size={20} /></button>
+      <button onClick={onIncrease} className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 p-1 transition-colors"><ChevronUp size={20} /></button>
 
-      <div className="bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.05)] w-16 h-12 flex items-center justify-center rounded-2xl my-0.5 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.05)] w-16 h-12 flex items-center justify-center rounded-2xl my-0.5 overflow-hidden transition-colors">
         <input
           type="number"
           inputMode="numeric"
@@ -410,16 +425,16 @@ export const VerticalPicker = ({
           onChange={(e) => setLocalValue(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={(e) => e.key === 'Enter' && handleBlur()}
-          className="w-full h-full text-center text-xl font-bold text-slate-900 bg-transparent outline-none"
+          className="w-full h-full text-center text-xl font-bold text-slate-900 dark:text-white bg-transparent outline-none"
         />
       </div>
 
-      <button onClick={onDecrease} className="text-slate-300 hover:text-slate-500 p-1 transition-colors"><ChevronDown size={20} /></button>
+      <button onClick={onDecrease} className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 p-1 transition-colors"><ChevronDown size={20} /></button>
 
       {(label || subLabel) && (
         <div className="text-center mt-1">
-          {label && <div className="text-[9px] font-bold text-slate-400 uppercase">{label}</div>}
-          {subLabel && <div className="text-[8px] font-bold text-slate-300 uppercase mt-0.5">{subLabel}</div>}
+          {label && <div className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">{label}</div>}
+          {subLabel && <div className="text-[8px] font-bold text-slate-300 dark:text-slate-600 uppercase mt-0.5">{subLabel}</div>}
         </div>
       )}
     </div>
@@ -443,17 +458,17 @@ export const WelcomeInput = ({
   icon?: React.ReactNode;
 }) => (
   <div className="mb-5">
-    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+    <label className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 ml-1">
       {label}
     </label>
-    <div className="bg-[#f8fafc] border border-slate-200 rounded-xl flex items-center px-4 py-3 focus-within:border-blue-400 focus-within:bg-white transition-all">
-      {icon && <div className="mr-3 text-slate-400">{icon}</div>}
+    <div className="bg-[#f8fafc] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center px-4 py-3 focus-within:border-blue-400 dark:focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition-all">
+      {icon && <div className="mr-3 text-slate-400 dark:text-slate-500">{icon}</div>}
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-transparent border-none outline-none text-slate-700 w-full font-medium placeholder:text-slate-400"
+        className="bg-transparent border-none outline-none text-slate-700 dark:text-slate-200 w-full font-medium placeholder:text-slate-400 dark:placeholder:text-slate-600"
       />
     </div>
   </div>
@@ -461,33 +476,39 @@ export const WelcomeInput = ({
 
 export const GenderSelect = ({
   selected,
-  onChange
+  onChange,
+  label = "Geschlecht",
+  maleLabel = "Männlich",
+  femaleLabel = "Weiblich"
 }: {
   selected: 'male' | 'female' | null;
-  onChange: (val: 'male' | 'female') => void
+  onChange: (val: 'male' | 'female') => void;
+  label?: string;
+  maleLabel?: string;
+  femaleLabel?: string;
 }) => (
   <div className="mb-8">
-    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
-      Geschlecht
+    <label className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 ml-1">
+      {label}
     </label>
     <div className="flex gap-3">
       <button
         onClick={() => onChange('male')}
         className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'male'
-            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+          ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+          : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
           }`}
       >
-        Männlich
+        {maleLabel}
       </button>
       <button
         onClick={() => onChange('female')}
         className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'female'
-            ? 'bg-white border-slate-200 text-slate-800 shadow-sm'
-            : 'bg-[#f8fafc] border-transparent text-slate-400 hover:bg-slate-100'
+          ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+          : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
           }`}
       >
-        Weiblich
+        {femaleLabel}
       </button>
     </div>
   </div>
@@ -497,9 +518,60 @@ export const GenderSelect = ({
 export const ResetButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
   <button
     onClick={onClick}
-    className="w-full bg-red-50 text-red-700 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 mt-8 hover:bg-red-100 transition-colors active:scale-95"
+    className="w-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 mt-8 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors active:scale-95"
   >
     <Trash2 size={18} />
     {label}
   </button>
+);
+
+export const ThemeSelect = ({
+  selected,
+  onChange,
+  label = "Design",
+  lightLabel = "Hell",
+  darkLabel = "Dunkel",
+  systemLabel = "System"
+}: {
+  selected: 'light' | 'dark' | 'system';
+  onChange: (val: 'light' | 'dark' | 'system') => void;
+  label?: string;
+  lightLabel?: string;
+  darkLabel?: string;
+  systemLabel?: string;
+}) => (
+  <div className="mb-8">
+    <label className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 ml-1">
+      {label}
+    </label>
+    <div className="flex gap-3">
+      <button
+        onClick={() => onChange('light')}
+        className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'light'
+          ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+          : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+          }`}
+      >
+        {lightLabel}
+      </button>
+      <button
+        onClick={() => onChange('dark')}
+        className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'dark'
+          ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+          : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+          }`}
+      >
+        {darkLabel}
+      </button>
+      <button
+        onClick={() => onChange('system')}
+        className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${selected === 'system'
+          ? 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white shadow-sm'
+          : 'bg-[#f8fafc] dark:bg-slate-800 border-transparent text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+          }`}
+      >
+        {systemLabel}
+      </button>
+    </div>
+  </div>
 );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { SwimState, UserProfile } from '../types';
 import {
   DisciplineLayout, TimeDisplayCard, Toggle, Card, Label,
@@ -25,6 +26,7 @@ export const SwimTab: React.FC<Props> = ({
   data, onChange, mode, onModeChange, onPresetChange, onSave,
   headerSubtitle, onOpenSettings, userProfile
 }) => {
+  const { t } = useTranslation();
 
   // Target Time State (for "Pace berechnen" mode)
   const { hours, minutes, seconds, updateTime, totalSeconds } = useTargetTime(0, 30, 0);
@@ -39,7 +41,7 @@ export const SwimTab: React.FC<Props> = ({
       const secs = calculateSwimTime(data.distanceMeters, data.paceMinPer100m, data.paceSecPer100m);
       return {
         displayMain: formatTime(secs),
-        displayLabel: 'Geschätzte Schwimmzeit',
+        displayLabel: t('swim.estimatedTime'),
         secondsForTotal: secs
       };
     } else {
@@ -57,7 +59,7 @@ export const SwimTab: React.FC<Props> = ({
 
       return {
         displayMain: `${pMin}:${formatSingleDigit(pSec)}/100m`,
-        displayLabel: 'Ø PACE',
+        displayLabel: t('swim.avgPace'),
         secondsForTotal: totalSeconds
       };
     }
@@ -98,45 +100,46 @@ export const SwimTab: React.FC<Props> = ({
   return (
     <DisciplineLayout
       theme="blue"
-      title="Schwimmen"
+      title={t('nav.swim')}
       subtitle={headerSubtitle}
       onSettingsClick={onOpenSettings}
       hasTopAd={!userProfile?.isPro}
     >
       {!userProfile?.isPro && <AdMobBanner />}
-
       <TimeDisplayCard
         label={displayLabel}
         time={displayMain}
+        textColor="text-blue-700"
         onAdd={() => onSave(secondsForTotal)}
-        textColor="text-[#005596]"
+        subLabel={t('actions.addToTotal')}
+        addedLabel={t('actions.added')}
       />
 
       <Toggle
         options={[
-          { label: 'Zeit berechnen', value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
-          { label: 'Pace berechnen', value: 'pace', icon: <Footprints size={16} strokeWidth={2.5} /> }
+          { label: t('swim.calcTime'), value: 'time', icon: <Timer size={16} strokeWidth={2.5} /> },
+          { label: t('swim.calcPace'), value: 'pace', icon: <Timer size={16} strokeWidth={2.5} /> }
         ]}
         active={mode}
         onChange={onModeChange}
         theme="blue"
       />
 
-      <Label>Distanz</Label>
+      <Label>{t('swim.distance')}</Label>
       <Card className="mb-5">
         <StepperInput
           value={distDisplay}
-          unit="KM"
+          unit={t('units.km')}
           onIncrease={handleDistIncrease}
           onDecrease={handleDistDecrease}
           onManualChange={handleDistManual}
         />
         <PresetGroup
           options={[
-            { label: 'Sprint', value: 750 },
-            { label: 'Olympisch', value: 1500 },
-            { label: '70.3 (Halb)', value: 1900 },
-            { label: '140.6 (Lang)', value: 3800 },
+            { label: t('presets.sprint'), value: 750 },
+            { label: t('presets.olympic'), value: 1500 },
+            { label: t('presets.half'), value: 1900 },
+            { label: t('presets.full'), value: 3800 },
           ]}
           activeValue={data.distanceMeters}
           onSelect={handlePreset}
@@ -146,7 +149,7 @@ export const SwimTab: React.FC<Props> = ({
 
       {mode === 'time' ? (
         <>
-          <Label>Pace (MIN/100M)</Label>
+          <Label>{t('swim.paceLabel')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-4">
               <VerticalPicker
@@ -155,7 +158,7 @@ export const SwimTab: React.FC<Props> = ({
                 onDecrease={() => updatePace(data.paceMinPer100m - 1, data.paceSecPer100m)}
                 onManualChange={(v) => updatePace(parseInt(v) || 0, data.paceSecPer100m)}
               />
-              <span className="text-2xl font-bold text-slate-300">:</span>
+              <span className="text-2xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(data.paceSecPer100m)}
                 onIncrease={() => updatePace(data.paceMinPer100m, data.paceSecPer100m + 1)}
@@ -163,15 +166,15 @@ export const SwimTab: React.FC<Props> = ({
                 onManualChange={(v) => updatePace(data.paceMinPer100m, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Min</span>
-              <span>Sek</span>
+            <div className="flex gap-16 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>
       ) : (
         <>
-          <Label>Zielzeit</Label>
+          <Label>{t('swim.targetTime')}</Label>
           <Card className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <VerticalPicker
@@ -180,14 +183,14 @@ export const SwimTab: React.FC<Props> = ({
                 onDecrease={() => updateTime(hours - 1, minutes, seconds)}
                 onManualChange={(v) => updateTime(parseInt(v) || 0, minutes, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(minutes)}
                 onIncrease={() => updateTime(hours, minutes + 1, seconds)}
                 onDecrease={() => updateTime(hours, minutes - 1, seconds)}
                 onManualChange={(v) => updateTime(hours, parseInt(v) || 0, seconds)}
               />
-              <span className="text-xl font-bold text-slate-300">:</span>
+              <span className="text-xl font-bold text-slate-300 dark:text-slate-600">:</span>
               <VerticalPicker
                 value={formatSingleDigit(seconds)}
                 onIncrease={() => updateTime(hours, minutes, seconds + 1)}
@@ -195,10 +198,10 @@ export const SwimTab: React.FC<Props> = ({
                 onManualChange={(v) => updateTime(hours, minutes, parseInt(v) || 0)}
               />
             </div>
-            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Std</span>
-              <span>Min</span>
-              <span>Sek</span>
+            <div className="flex gap-12 mt-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <span>{t('units.hours')}</span>
+              <span>{t('units.min')}</span>
+              <span>{t('units.sec')}</span>
             </div>
           </Card>
         </>
