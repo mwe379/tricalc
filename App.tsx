@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
   // -- Theme Hook --
-  useTheme(userProfile?.theme || 'system');
+  useTheme(userProfile?.theme || 'system', [activeTab]);
 
   // -- IAP Hook --
   const { isPro, purchase, restore, product, storeAvailable } = useIAP();

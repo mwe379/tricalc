@@ -5,6 +5,7 @@ import { ArrowLeft, User, Calendar, Globe } from 'lucide-react';
 import { calculateAgeGroup } from '../utils';
 import 'cordova-plugin-purchase';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../hooks/useTheme';
 
 interface Props {
   userProfile: UserProfile;
@@ -22,6 +23,9 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
   const [birthDate, setBirthDate] = useState(userProfile.birthDate);
   const [gender, setGender] = useState(userProfile.gender);
   const [theme, setTheme] = useState<Theme>(userProfile.theme || 'system');
+
+  // Live Preview of Theme
+  useTheme(theme);
 
   const ageGroup = calculateAgeGroup(birthDate);
 
