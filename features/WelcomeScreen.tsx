@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Flag, User, Calendar, ArrowRight } from 'lucide-react';
 import { WelcomeInput, GenderSelect, ThemeSelect } from '../components/MD3Components';
 import { UserProfile, Theme } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 interface Props {
   onComplete: (profile: UserProfile) => void;
@@ -14,6 +15,9 @@ export const WelcomeScreen: React.FC<Props> = ({ onComplete }) => {
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | null>(null);
   const [theme, setTheme] = useState<Theme>('system');
+
+  // Live Preview
+  useTheme(theme);
 
   const handleSubmit = () => {
     if (name && birthDate && gender) {

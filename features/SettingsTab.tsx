@@ -27,6 +27,18 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
   // Live Preview of Theme
   useTheme(theme);
 
+  const handleThemeChange = (newTheme: Theme) => {
+    setTheme(newTheme);
+    // Instant Save
+    onUpdateProfile({
+      name,
+      birthDate,
+      gender,
+      isPro: userProfile.isPro,
+      theme: newTheme
+    });
+  };
+
   const ageGroup = calculateAgeGroup(birthDate);
 
   const handleSave = () => {
@@ -102,7 +114,7 @@ export const SettingsTab: React.FC<Props> = ({ userProfile, onUpdateProfile, onC
           <Card>
             <ThemeSelect
               selected={theme}
-              onChange={setTheme}
+              onChange={handleThemeChange}
               label=""
               lightLabel={t('settings.themeLight') || "Hell"}
               darkLabel={t('settings.themeDark') || "Dunkel"}
